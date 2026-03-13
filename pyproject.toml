@@ -3,12 +3,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rekipe-ingredient"
+name = "rekipe-sample"
 version = "0.1.0"
-description = "Ingredient CRUD — built on kcrud"
-requires-python = "==3.13"
+description = "Sample CRUD — built on kcrud"
+requires-python = ">=3.13"
 dependencies = [
-    "kcrud[mongodb,fastapi,mcp] @ file:///Users/killian/Karned/kcrud",
+    "kcrud[mongodb,fastapi,mcp] @ file:///Users/killian/Karned/Rekipe/framework",
 ]
 
 [tool.hatch.build.targets.wheel]
