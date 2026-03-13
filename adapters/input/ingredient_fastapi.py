@@ -29,12 +29,14 @@ class IngredientRouter:
         self.router.add_api_route("/{uuid}", self.patch, methods=["PATCH"], response_model=IngredientSchema)
         self.router.add_api_route("/{uuid}", self.delete, methods=["DELETE"], status_code=204)
         self.router.add_api_route("/{uuid}/duplicate", self.duplicate, methods=["POST"], response_model=IngredientSchema, status_code=201)
+        self.router.add_api_route("/purge", self.purge, methods=["DELETE"], status_code=200)
 
     @staticmethod
     def _to_uuid6(uuid: StdUUID) -> UUID:
         return UUID(str(uuid))
 
     async def create(self, payload: IngredientCreateSchema) -> IngredientSchema:
+        """Create a new ingredient."""
         ingredient = Ingredient(name=payload.name, unit=payload.unit)
         result = await self._service.create(ingredient)
         return IngredientSchema.model_validate(result)
@@ -76,3 +78,8 @@ class IngredientRouter:
 
     async def find_by_name(self, name: str) -> list[IngredientSchema]:
         return [IngredientSchema.model_validate(i) for i in await self._service.find_by_name(name)]
+
+    async def purge(self) -> dict:
+        purged = await self._service.purge()
+        return {"purged": purged}
+

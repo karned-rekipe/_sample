@@ -66,3 +66,10 @@ class IngredientMCP:
         async def find_ingredients_by_name(name: str) -> list[dict]:
             """Find ingredients whose name contains the given string."""
             return [IngredientSchema.model_validate(i).model_dump() for i in await service.find_by_name(name)]
+
+        @self._mcp.tool
+        async def purge_ingredients() -> dict:
+            """Purge all soft-deleted ingredients that have exceeded the retention period."""
+            purged = await service.purge()
+            return {"purged": purged}
+

@@ -1,0 +1,11 @@
+- comment FASTAPI pour la doc
+- dockerfile
+- tests pour framework
+- kafka
+- maria
+- postgres
+- mysql
+- neo4J
+- rabbitmq
+- azure blob
+- S3 like
