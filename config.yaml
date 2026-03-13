@@ -1,0 +1,27 @@
+adapters:
+  logger: console       # choix : console
+
+  repository: mongodb    # choix : memory | mongodb | duckdb
+
+  mongodb:
+    uri: mongodb://localhost:5971
+    db_name: framework
+    collection_name: ingredients
+
+  duckdb:               # formats : .csv | .parquet | .json | .arrow
+    path: data/ingredients.csv
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  reload: true
+
+mcp:
+  host: 127.0.0.1
+  port: 8001
+
+soft_delete:
+  # durée de rétention en jours avant suppression physique
+  # 0 = suppression immédiate (pas de soft delete)
+  # null = conservation infinie (jamais supprimé physiquement)
+  retention_days: 30

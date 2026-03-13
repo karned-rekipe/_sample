@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rekipe-ingredient"
+version = "0.1.0"
+description = "Ingredient CRUD — built on kcrud"
+requires-python = "==3.13"
+dependencies = [
+    "kcrud[mongodb,fastapi,mcp] @ file:///Users/killian/Karned/kcrud",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "domain",
+    "adapters",
+    "application",
+    "infrastructure",
+]
+
