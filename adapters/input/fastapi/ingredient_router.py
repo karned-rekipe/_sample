@@ -1,23 +1,29 @@
-from fastapi import APIRouter, HTTPException
 from uuid import UUID as StdUUID
+
+from fastapi import APIRouter, Depends, HTTPException
 from uuid6 import UUID
 
+from adapters.input.fastapi.dependencies import inject_tenant_uri
 from adapters.input.schemas.ingredient_schema import (
     IngredientCreateSchema,
     IngredientPatchSchema,
     IngredientUpdateSchema,
     IngredientSchema,
 )
+from application.services.ingredient_service import IngredientService
 from domain.models.ingredient import Ingredient
 from kcrud.domain.ports.logger import Logger
-from application.services.ingredient_service import IngredientService
 
 
 class IngredientRouter:
     def __init__(self, service: IngredientService, logger: Logger) -> None:
         self._service = service
         self._logger = logger
-        self.router = APIRouter(prefix = "/ingredient/v1", tags = ["ingredients"])
+        self.router = APIRouter(
+            prefix = "/ingredient/v1",
+            tags = ["ingredients"],
+            dependencies = [Depends(inject_tenant_uri)],
+        )
         self._register_routes()
 
     def _register_routes(self) -> None:

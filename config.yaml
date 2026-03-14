@@ -1,10 +1,10 @@
 adapters:
   logger: console       # choix : console
-
-  repository: mongodb    # choix : memory | mongodb | duckdb
+  repository: mongodb   # choix : memory | mongodb | duckdb
+  multitenant: false    # true = URI résolue par requête (vault via JWT)
 
   mongodb:
-    uri: mongodb://localhost:5971
+    uri: mongodb://localhost:5971  # ignoré si multitenant: true
     db_name: framework
     collection_name: ingredients
 
