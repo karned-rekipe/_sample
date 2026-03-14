@@ -1,6 +1,6 @@
 import fastmcp
 
-from adapters.input.ingredient_fastmcp import IngredientMCP
+from adapters.input.fastmcp.ingredient_mcp import IngredientMCP
 from infrastructure.container import build_ingredient_service
 
 
