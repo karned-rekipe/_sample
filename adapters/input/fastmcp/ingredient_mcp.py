@@ -6,7 +6,7 @@ import fastmcp
 from adapters.input.schemas.ingredient_schema import IngredientSchema
 from domain.models.ingredient import Ingredient
 from kcrud.domain.ports.logger import Logger
-from domain.services.ingredient_service import IngredientService
+from application.services.ingredient_service import IngredientService
 
 
 class IngredientMCP:
@@ -28,7 +28,7 @@ class IngredientMCP:
         @self._mcp.tool
         async def create_ingredient(name: str, unit: str | None = None) -> dict:
             """Create a new ingredient."""
-            result = await service.create(Ingredient(name=name, unit=unit))
+            result = await service.create(Ingredient(name = name, unit = unit))
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -36,14 +36,14 @@ class IngredientMCP:
             """Get an ingredient by its UUID."""
             result = await service.read(to_uuid6(StdUUID(uuid)))
             if result is None:
-                logger.warning("⚠️ Ingredient not found via MCP", uuid=uuid)
+                logger.warning("⚠️ Ingredient not found via MCP", uuid = uuid)
                 return None
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
         async def update_ingredient(uuid: str, name: str, unit: str | None = None) -> dict:
             """Update an existing ingredient."""
-            result = await service.update(Ingredient(uuid=to_uuid6(StdUUID(uuid)), name=name, unit=unit))
+            result = await service.update(Ingredient(uuid = to_uuid6(StdUUID(uuid)), name = name, unit = unit))
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -72,4 +72,3 @@ class IngredientMCP:
             """Purge all soft-deleted ingredients that have exceeded the retention period."""
             purged = await service.purge()
             return {"purged": purged}
-

@@ -1,5 +1,5 @@
-from kcrud.adapters.output.mongodb_config import MongoDBConfig
-from kcrud.adapters.output.mongodb_repository import MongoDBRepository
+from kcrud.adapters.output.mongodb.config import MongoDBConfig
+from kcrud.adapters.output.mongodb.repository import MongoDBRepository
 from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 
