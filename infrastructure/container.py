@@ -1,7 +1,8 @@
 from arclith import Arclith, MongoDBConfig
 from domain.ports.ingredient_repository import IngredientRepository
 from application.services.ingredient_service import IngredientService
-def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
+from logging import Logger
+def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logger]:
     logger = arclith.logger
     config = arclith.config
     match config.adapters.repository:
