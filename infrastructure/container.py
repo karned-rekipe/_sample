@@ -1,5 +1,4 @@
 from arclith import Arclith, MongoDBConfig
-from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 from application.services.ingredient_service import IngredientService
 def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
