@@ -30,6 +30,7 @@ def _build_repository(config: AppConfig, logger: Logger) -> IngredientRepository
             return DuckDBIngredientRepository(config.adapters.duckdb.path)
         case _:
             return InMemoryIngredientRepository()
+    return InMemoryIngredientRepository()
 
 
 def build_ingredient_service() -> tuple[IngredientService, Logger]:
