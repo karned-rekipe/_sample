@@ -7,16 +7,16 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
     config = arclith.config
     match config.adapters.repository:
         case "mongodb":
-            from adapters.output.mongodb_ingredient_repository import MongoDBIngredientRepository
+            from adapters.output.mongodb.repository import MongoDBIngredientRepository
             mongo = config.adapters.mongodb
             repo: IngredientRepository = MongoDBIngredientRepository(
                 MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name),
                 logger,
             )
         case "duckdb":
-            from adapters.output.duckdb_ingredient_repository import DuckDBIngredientRepository
+            from adapters.output.duckdb.repository import DuckDBIngredientRepository
             repo = DuckDBIngredientRepository(config.adapters.duckdb.path)
         case _:
-            from adapters.output.in_memory_ingredient_repository import InMemoryIngredientRepository
+            from adapters.output.memory.repository import InMemoryIngredientRepository
             repo = InMemoryIngredientRepository()
     return IngredientService(repo, logger, config.soft_delete.retention_days), logger

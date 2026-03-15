@@ -1,6 +1,6 @@
 from pathlib import Path
 from arclith import Arclith
-from adapters.input.ingredient_fastmcp import IngredientMCP
+from adapters.input.fastmcp.tools import IngredientMCP
 from infrastructure.container import build_ingredient_service
 arclith = Arclith(Path(__file__).parent / "config.yaml")
 service, logger = build_ingredient_service(arclith)

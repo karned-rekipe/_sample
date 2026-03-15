@@ -16,3 +16,4 @@ class MongoDBIngredientRepository(MongoDBRepository[Ingredient], IngredientRepos
                 self._from_doc(doc)
                 async for doc in col.find({"name": {"$regex": name, "$options": "i"}, "deleted_at": None})
             ]
+
