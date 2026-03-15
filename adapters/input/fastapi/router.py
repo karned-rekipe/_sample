@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+
+from adapters.input.fastapi.dependencies import inject_tenant_uri
 from uuid import UUID as StdUUID
 from uuid6 import UUID
 
@@ -17,7 +19,7 @@ class IngredientRouter:
     def __init__(self, service: IngredientService, logger: Logger) -> None:
         self._service = service
         self._logger = logger
-        self.router = APIRouter(prefix="/ingredient/v1", tags=["ingredients"])
+        self.router = APIRouter(prefix="/ingredient/v1", tags=["ingredients"], dependencies=[Depends(inject_tenant_uri)])
         self._register_routes()
 
     def _register_routes(self) -> None:
