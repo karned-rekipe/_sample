@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from kcrud.adapters.output.console_logger import ConsoleLogger
-from kcrud.adapters.output.mongodb_config import MongoDBConfig
-from kcrud.domain.ports.logger import Logger
-from kcrud.infrastructure.config import AppConfig, load_config
+from arclith.adapters.output.console_logger import ConsoleLogger
+from arclith.adapters.output.mongodb_config import MongoDBConfig
+from arclith.domain.ports.logger import Logger
+from arclith.infrastructure.config import AppConfig, load_config
 
 from adapters.output.in_memory_ingredient_repository import InMemoryIngredientRepository
 from domain.ports.ingredient_repository import IngredientRepository

@@ -2,8 +2,8 @@ import logging
 import uvicorn
 from pathlib import Path
 
-from kcrud.domain.ports.logger import Logger, LogLevel
-from kcrud.infrastructure.config import load_config
+from arclith.domain.ports.logger import Logger, LogLevel
+from arclith.infrastructure.config import load_config
 from infrastructure.api import create_api
 
 

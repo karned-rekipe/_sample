@@ -5,11 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "rekipe-sample"
 version = "0.1.0"
-description = "Sample CRUD — built on kcrud"
+description = "Sample CRUD — built on arclith"
 requires-python = ">=3.13"
 dependencies = [
-    "kcrud[mongodb,fastapi,mcp] @ file:///Users/killian/Karned/Rekipe/framework",
+    "arclith[mongodb,fastapi,mcp]>=0.1.0",
 ]
+
+[tool.uv.sources]
+arclith = { path = "../framework", editable = true }
 
 [tool.hatch.build.targets.wheel]
 packages = [

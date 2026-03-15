@@ -1,5 +1,5 @@
-from kcrud.domain.ports.logger import Logger
-from kcrud.domain.services.base_service import BaseService
+from arclith.domain.ports.logger import Logger
+from arclith.domain.services.base_service import BaseService
 from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 

@@ -9,7 +9,7 @@ from adapters.input.schemas.ingredient_schema import (
     IngredientSchema,
 )
 from domain.models.ingredient import Ingredient
-from kcrud.domain.ports.logger import Logger
+from arclith.domain.ports.logger import Logger
 from domain.services.ingredient_service import IngredientService
 
 

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-from kcrud.adapters.input.schemas.base_schema import BaseSchema
+from arclith.adapters.input.schemas.base_schema import BaseSchema
 
 
 class IngredientCreateSchema(BaseModel):

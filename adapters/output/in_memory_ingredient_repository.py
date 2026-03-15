@@ -1,4 +1,4 @@
-from kcrud.adapters.output.in_memory_repository import InMemoryRepository
+from arclith.adapters.output.in_memory_repository import InMemoryRepository
 from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 
