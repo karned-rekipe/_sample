@@ -54,7 +54,7 @@ _setup_logging(logger)
 if __name__ == "__main__":
     config = load_config(_CONFIG_PATH)
     uvicorn.run(
-        "main_api:api",
+        app = "main_api:api",
         host=config.api.host,
         port=config.api.port,
         reload=config.api.reload,
