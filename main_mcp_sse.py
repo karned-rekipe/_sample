@@ -1,11 +1,10 @@
 from pathlib import Path
-from kcrud.infrastructure.config import load_config
-from infrastructure.mcp import create_mcp
-
-_CONFIG_PATH = Path(__file__).parent / "config.yaml"
-
-mcp = create_mcp()
-
+from arclith import Arclith
+from adapters.input.fastmcp.tools import IngredientMCP
+from infrastructure.container import build_ingredient_service
+arclith = Arclith(Path(__file__).parent / "config.yaml")
+service, logger = build_ingredient_service(arclith)
+mcp = arclith.fastmcp("Rekipe - Ingredients")
+IngredientMCP(service, logger, mcp)
 if __name__ == "__main__":
-    config = load_config(_CONFIG_PATH)
-    mcp.run(transport="sse", host=config.mcp.host, port=config.mcp.port)
+    arclith.run_mcp_sse(mcp)

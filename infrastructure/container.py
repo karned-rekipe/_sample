@@ -1,39 +1,33 @@
-from pathlib import Path
-
-from adapters.output.memory.ingredient_repository import InMemoryIngredientRepository
-from application.services.ingredient_service import IngredientService
+from arclith import Arclith, MongoDBConfig
 from domain.ports.ingredient_repository import IngredientRepository
-from kcrud.adapters.output.console.logger import ConsoleLogger
-from kcrud.adapters.output.mongodb.config import MongoDBConfig
-from kcrud.domain.ports.logger import Logger
-from kcrud.infrastructure.config import AppConfig, load_config
-
-_CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
-
-
-def _build_logger() -> Logger:
-    return ConsoleLogger()
-
-
-def _build_repository(config: AppConfig, logger: Logger) -> IngredientRepository:
+from application.services.ingredient_service import IngredientService
+from logging import Logger
+def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logger]:
+    logger = arclith.logger
+    config = arclith.config
     match config.adapters.repository:
         case "mongodb":
-            from adapters.output.mongodb.ingredient_repository import MongoDBIngredientRepository
-            mongo = config.adapters.mongodb
-            return MongoDBIngredientRepository(MongoDBConfig(
-                db_name = mongo.db_name,
-                collection_name = mongo.collection_name,
-                uri = mongo.uri,
-            ), logger)
+            from adapters.output.mongodb.repository import MongoDBIngredientRepository
+            mongo = getattr(config.adapters, "mongodb", None)
+            if mongo is None:
+                raise ValueError(
+                    "MongoDB adapter configuration 'adapters.mongodb' is required when "
+                    "'adapters.repository' is set to 'mongodb'."
+                )
+            repo: IngredientRepository = MongoDBIngredientRepository(
+                MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name),
+                logger,
+            )
         case "duckdb":
-            from adapters.output.duckdb.ingredient_repository import DuckDBIngredientRepository
-            return DuckDBIngredientRepository(config.adapters.duckdb.path)
+            from adapters.output.duckdb.repository import DuckDBIngredientRepository
+            duckdb_config = getattr(config.adapters, "duckdb", None)
+            if duckdb_config is None or getattr(duckdb_config, "path", None) is None:
+                raise ValueError(
+                    "Invalid configuration: adapters.repository is 'duckdb' but "
+                    "config.adapters.duckdb.path is not set."
+                )
+            repo = DuckDBIngredientRepository(duckdb_config.path)
         case _:
-            return InMemoryIngredientRepository()
-
-
-def build_ingredient_service() -> tuple[IngredientService, Logger]:
-    config = load_config(_CONFIG_PATH)
-    logger = _build_logger()
-    repository = _build_repository(config, logger)
-    return IngredientService(repository, logger, config.soft_delete.retention_days), logger
+            from adapters.output.memory.repository import InMemoryIngredientRepository
+            repo = InMemoryIngredientRepository()
+    return IngredientService(repo, logger, config.soft_delete.retention_days), logger

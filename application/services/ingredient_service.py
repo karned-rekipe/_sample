@@ -1,5 +1,4 @@
-from kcrud.domain.ports.logger import Logger
-from kcrud.application.services.base_service import BaseService
+from arclith import BaseService, Logger
 from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 from application.use_cases import FindByNameUseCase
@@ -12,3 +11,4 @@ class IngredientService(BaseService[Ingredient]):
 
     async def find_by_name(self, name: str) -> list[Ingredient]:
         return await self._find_by_name_uc.execute(name)
+

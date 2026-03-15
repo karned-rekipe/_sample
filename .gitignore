@@ -1,7 +1,9 @@
+.venv/
+.idea/
+.vscode/
 **/__pycache__/
 *.pyc
 *.pyo
-.venv/
 dist/
 *.egg-info/
 .hatch/
