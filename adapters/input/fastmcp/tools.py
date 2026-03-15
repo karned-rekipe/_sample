@@ -6,7 +6,7 @@ import fastmcp
 from adapters.input.schemas.ingredient_schema import IngredientSchema
 from domain.models.ingredient import Ingredient
 from arclith.domain.ports.logger import Logger
-from domain.services.ingredient_service import IngredientService
+from application.services.ingredient_service import IngredientService
 
 
 class IngredientMCP:
