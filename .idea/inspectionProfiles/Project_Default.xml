@@ -1,0 +1,40 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="dagster" />
+          <option value="dagster-webserver" />
+          <option value="dagster-postgres" />
+          <option value="psycopg2-binary" />
+          <option value="pydantic" />
+          <option value="PyYAML" />
+          <option value="requests" />
+          <option value="urllib3" />
+          <option value="jsonschema" />
+          <option value="python-dateutil" />
+          <option value="watchdog" />
+          <option value="pytest" />
+          <option value="pytest-cov" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="filter" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="fastapi.applications.FastAPI.database" />
+          <option value="property.items" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
