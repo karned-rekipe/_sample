@@ -1,43 +1,22 @@
-from pathlib import Path
-
-from arclith.adapters.output.console_logger import ConsoleLogger
-from arclith.adapters.output.mongodb_config import MongoDBConfig
-from arclith.domain.ports.logger import Logger
-from arclith.infrastructure.config import AppConfig, load_config
-
-from adapters.output.in_memory_ingredient_repository import InMemoryIngredientRepository
+from arclith import Arclith, MongoDBConfig
+from domain.models.ingredient import Ingredient
 from domain.ports.ingredient_repository import IngredientRepository
 from domain.services.ingredient_service import IngredientService
-
-_CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
-
-
-def _build_logger(config: AppConfig) -> Logger:
-    return ConsoleLogger()
-
-
-def _build_repository(config: AppConfig) -> IngredientRepository:
+def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
+    logger = arclith.logger
+    config = arclith.config
     match config.adapters.repository:
         case "mongodb":
             from adapters.output.mongodb_ingredient_repository import MongoDBIngredientRepository
-            if config.adapters.mongodb is None:
-                raise ValueError("repository=mongodb mais aucune section [adapters.mongodb] dans config.yaml")
             mongo = config.adapters.mongodb
-            return MongoDBIngredientRepository(MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name))
+            repo: IngredientRepository = MongoDBIngredientRepository(
+                MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name),
+                logger,
+            )
         case "duckdb":
             from adapters.output.duckdb_ingredient_repository import DuckDBIngredientRepository
-            if config.adapters.duckdb is None:
-                raise ValueError("repository=duckdb mais aucune section [adapters.duckdb] dans config.yaml")
-            return DuckDBIngredientRepository(config.adapters.duckdb.path)
+            repo = DuckDBIngredientRepository(config.adapters.duckdb.path)
         case _:
-            return InMemoryIngredientRepository()
-
-
-def _build_ingredient_service(config: AppConfig) -> tuple[IngredientService, Logger]:
-    logger = _build_logger(config)
-    repository = _build_repository(config)
-    return IngredientService(repository, logger, config.soft_delete.retention_days), logger
-
-
-def build_ingredient_service() -> tuple[IngredientService, Logger]:
-    return _build_ingredient_service(load_config(_CONFIG_PATH))
+            from adapters.output.in_memory_ingredient_repository import InMemoryIngredientRepository
+            repo = InMemoryIngredientRepository()
+    return IngredientService(repo, logger, config.soft_delete.retention_days), logger
