@@ -1,6 +1,6 @@
-from .in_memory_ingredient_repository import InMemoryIngredientRepository
-from .mongodb_ingredient_repository import MongoDBIngredientRepository
-from .duckdb_ingredient_repository import DuckDBIngredientRepository
+from adapters.output.memory.ingredient_repository import InMemoryIngredientRepository
+from adapters.output.mongodb.ingredient_repository import MongoDBIngredientRepository
+from adapters.output.duckdb.ingredient_repository import DuckDBIngredientRepository
 
 __all__ = [
     "InMemoryIngredientRepository",
