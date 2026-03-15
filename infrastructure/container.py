@@ -20,7 +20,13 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logge
             )
         case "duckdb":
             from adapters.output.duckdb.repository import DuckDBIngredientRepository
-            repo = DuckDBIngredientRepository(config.adapters.duckdb.path)
+            duckdb_config = getattr(config.adapters, "duckdb", None)
+            if duckdb_config is None or getattr(duckdb_config, "path", None) is None:
+                raise ValueError(
+                    "Invalid configuration: adapters.repository is 'duckdb' but "
+                    "config.adapters.duckdb.path is not set."
+                )
+            repo = DuckDBIngredientRepository(duckdb_config.path)
         case _:
             from adapters.output.memory.repository import InMemoryIngredientRepository
             repo = InMemoryIngredientRepository()
