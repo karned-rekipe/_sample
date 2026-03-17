@@ -13,4 +13,5 @@ IngredientResources(service, logger, mcp)
 IngredientPrompts(service, logger, mcp)
 
 if __name__ == "__main__":
-    arclith.run_mcp_sse(mcp)
+    arclith.run_mcp_http(mcp)
+
