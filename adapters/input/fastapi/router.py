@@ -19,7 +19,7 @@ class IngredientRouter:
     def __init__(self, service: IngredientService, logger: Logger) -> None:
         self._service = service
         self._logger = logger
-        self.router = APIRouter(prefix="/ingredient/v1", tags=["ingredients"], dependencies=[Depends(inject_tenant_uri)])
+        self.router = APIRouter(prefix="/v1/ingredients", tags=["ingredients"], dependencies=[Depends(inject_tenant_uri)])
         self._register_routes()
 
     def _register_routes(self) -> None:
