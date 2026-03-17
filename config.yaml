@@ -1,6 +1,6 @@
 adapters:
   logger: console       # choix : console
-  repository: mongodb    # choix : memory  mongodb  duckdb
+  repository: memory    # choix : memory  mongodb  duckdb
   multitenant: false    # true = URI résolue par requête (vault via JWT)
 
   mongodb:
