@@ -15,7 +15,7 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logge
                     "'adapters.repository' is set to 'mongodb'."
                 )
             repo: IngredientRepository = MongoDBIngredientRepository(
-                MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name),
+                MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name),
                 logger,
             )
         case "duckdb":
