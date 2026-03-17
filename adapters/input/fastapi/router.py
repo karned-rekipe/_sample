@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from arclith import Arclith
 from adapters.input.fastapi.ingredient_router import IngredientRouter
-from infrastructure.container import build_ingredient_service
+from infrastructure.ingredient_container import build_ingredient_service
 
 
 def register_routers(app: FastAPI, arclith: Arclith) -> None:
