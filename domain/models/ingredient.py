@@ -1,24 +1,38 @@
-from dataclasses import dataclass
 from typing import Optional
+
+from pydantic import Field, field_validator
 
 from arclith.domain.models.entity import Entity
 
 
-@dataclass
 class Ingredient(Entity):
-    name: str = ""
-    unit: Optional[str] = None
+    name: str = Field(
+        default="",
+        min_length=1,
+        description="Nom de l'ingrédient, normalisé (espaces supprimés en début et fin).",
+        examples=["Farine de blé", "Sel fin"],
+    )
+    unit: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        description="Unité de mesure associée à l'ingrédient (ex. g, kg, ml). None si non applicable.",
+        examples=["g", "kg", "ml", None],
+    )
 
-    def __post_init__(self) -> None:
-        normalized_name = self.name.strip()
-        if not normalized_name:
+    @field_validator("name", mode="before")
+    @classmethod
+    def strip_name(cls, v: str) -> str:
+        stripped = v.strip()
+        if not stripped:
             raise ValueError("Ingredient name cannot be empty")
-        self.name = normalized_name
+        return stripped
 
-        if self.unit is not None:
-            normalized_unit = self.unit.strip()
-            if not normalized_unit:
-                raise ValueError("Ingredient unit cannot be empty when provided")
-            self.unit = normalized_unit
-
-
+    @field_validator("unit", mode="before")
+    @classmethod
+    def strip_unit(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        stripped = v.strip()
+        if not stripped:
+            raise ValueError("Ingredient unit cannot be empty when provided")
+        return stripped

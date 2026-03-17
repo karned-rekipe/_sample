@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Sample CRUD — built on arclith"
 requires-python = ">=3.13"
 dependencies = [
-    "arclith[mongodb,fastapi,mcp]>=0.1.0",
+    "arclith[mongodb,fastapi,mcp,duckdb]>=0.1.0",
     "pydantic-ai[openai]>=0.2.0",
     "chainlit>=2.0.0",
 ]
