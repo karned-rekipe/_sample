@@ -8,11 +8,13 @@ class IngredientCreateSchema(BaseModel):
         ...,
         description="Nom de l'ingrédient.",
         examples = ["Farine de blé", "Sel fin"],
+        min_length = 1
     )
     unit: str | None = Field(
         None,
         description="Unité de mesure (ex. g, kg, ml). None si non applicable.",
         examples = ["g", "kg", "ml", None],
+        min_length = 1
     )
 
     @field_validator("name", mode = "before")
