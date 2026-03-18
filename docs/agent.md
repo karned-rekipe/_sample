@@ -40,7 +40,7 @@ agent:
 
 ```bash
 cd _sample
-uv run python main_mcp_http.py
+uv run python main_mcp_http.py --port 8002
 ```
 
 Écoute sur `http://127.0.0.1:8001/mcp`.
