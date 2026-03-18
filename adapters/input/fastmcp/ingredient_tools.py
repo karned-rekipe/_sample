@@ -37,6 +37,7 @@ class IngredientMCP:
             """Create a new ingredient."""
             await inject_tenant_uri(ctx)
             result = await service.create(Ingredient(name=name, unit=unit))
+            logger.info("✅ Ingredient created via MCP", uuid = str(result.uuid), name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -50,6 +51,7 @@ class IngredientMCP:
             if result is None:
                 logger.warning("⚠️ Ingredient not found via MCP", uuid=uuid)
                 return None
+            logger.info("✅ Ingredient fetched via MCP", uuid = uuid, name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -62,6 +64,7 @@ class IngredientMCP:
             """Update an existing ingredient."""
             await inject_tenant_uri(ctx)
             result = await service.update(Ingredient(uuid=to_uuid6(StdUUID(uuid)), name=name, unit=unit))
+            logger.info("✅ Ingredient updated via MCP", uuid = uuid, name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -72,6 +75,7 @@ class IngredientMCP:
             """Delete an ingredient by its UUID."""
             await inject_tenant_uri(ctx)
             await service.delete(to_uuid6(StdUUID(uuid)))
+            logger.info("✅ Ingredient deleted via MCP", uuid = uuid)
 
         @self._mcp.tool
         async def list_ingredients(
@@ -81,6 +85,7 @@ class IngredientMCP:
             """List all ingredients, optionally filtered by name."""
             await inject_tenant_uri(ctx)
             items = await service.find_by_name(name) if name else await service.find_all()
+            logger.info("✅ Ingredients listed via MCP", count = len(items), filter = name)
             return [IngredientSchema.model_validate(i).model_dump() for i in items]
 
         @self._mcp.tool
@@ -91,6 +96,7 @@ class IngredientMCP:
             """Duplicate an ingredient, assigning it a new UUID."""
             await inject_tenant_uri(ctx)
             result = await service.duplicate(to_uuid6(StdUUID(uuid)))
+            logger.info("✅ Ingredient duplicated via MCP", source_uuid = uuid, new_uuid = str(result.uuid))
             return IngredientSchema.model_validate(result).model_dump()
 
         @self._mcp.tool
@@ -98,5 +104,6 @@ class IngredientMCP:
             """Purge all soft-deleted ingredients that have exceeded the retention period."""
             await inject_tenant_uri(ctx)
             purged = await service.purge()
+            logger.info("✅ Ingredients purged via MCP", count = purged)
             return {"purged": purged}
 

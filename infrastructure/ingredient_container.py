@@ -8,6 +8,7 @@ from domain.ports.ingredient_repository import IngredientRepository
 def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logger]:
     config = arclith.config
     repo: IngredientRepository
+    arclith.logger.info("🗄️ Repository adapter selected", adapter = config.adapters.repository)
     match config.adapters.repository:
         case "mongodb":
             from adapters.output.mongodb.repository import MongoDBIngredientRepository
