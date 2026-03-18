@@ -191,6 +191,7 @@ dependencies = [
 [package.optional-dependencies]
 duckdb = [
     { name = "duckdb" },
+    { name = "pytz" },
 ]
 fastapi = [
     { name = "fastapi" },
@@ -215,6 +216,8 @@ requires-dist = [
     { name = "motor", marker = "extra == 'all'", specifier = "==3.7.1" },
     { name = "motor", marker = "extra == 'mongodb'", specifier = "==3.7.1" },
     { name = "pydantic", specifier = "==2.12.5" },
+    { name = "pytz", marker = "extra == 'all'", specifier = ">=2024.1" },
+    { name = "pytz", marker = "extra == 'duckdb'", specifier = ">=2024.1" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "uuid6", specifier = "==2025.0.1" },
     { name = "uvicorn", marker = "extra == 'all'", specifier = "==0.41.0" },
@@ -3030,6 +3033,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/59/81/cf8284f45e32efa18d3848ed82cdd4dcc1b657b082458fbe01ad3e1f2f8d/python_socketio-5.16.1.tar.gz", hash = "sha256:f863f98eacce81ceea2e742f6388e10ca3cdd0764be21d30d5196470edf5ea89", size = 128508, upload-time = "2026-02-06T23:42:07Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/c7/deb8c5e604404dbf10a3808a858946ca3547692ff6316b698945bb72177e/python_socketio-5.16.1-py3-none-any.whl", hash = "sha256:a3eb1702e92aa2f2b5d3ba00261b61f062cce51f1cfb6900bf3ab4d1934d2d35", size = 82054, upload-time = "2026-02-06T23:42:05.772Z" },
+]
+
+[[package]]
+name = "pytz"
+version = "2026.1.post1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/db/b8721d71d945e6a8ac63c0fc900b2067181dbb50805958d4d4661cf7d277/pytz-2026.1.post1.tar.gz", hash = "sha256:3378dde6a0c3d26719182142c56e60c7f9af7e968076f31aae569d72a0358ee1", size = 321088, upload-time = "2026-03-03T07:47:50.683Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/99/781fe0c827be2742bcc775efefccb3b048a3a9c6ce9aec0cbf4a101677e5/pytz-2026.1.post1-py2.py3-none-any.whl", hash = "sha256:f2fd16142fda348286a75e1a524be810bb05d444e5a081f37f7affc635035f7a", size = 510489, upload-time = "2026-03-03T07:47:49.167Z" },
 ]
 
 [[package]]
