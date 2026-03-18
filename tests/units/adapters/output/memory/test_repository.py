@@ -1,8 +1,8 @@
-import pytest
 from datetime import datetime, timezone
+
+import pytest
 from uuid6 import uuid7
 
-from adapters.output.memory.repository import InMemoryIngredientRepository
 from domain.models.ingredient import Ingredient
 
 
