@@ -7,14 +7,12 @@ from arclith.domain.models.entity import Entity
 
 class Ingredient(Entity):
     name: str = Field(
-        default="",
-        min_length=1,
-        description="Nom de l'ingrédient, normalisé (espaces supprimés en début et fin).",
+        ...,
+        description="Nom de l'ingrédient",
         examples=["Farine de blé", "Sel fin"],
     )
-    unit: Optional[str] = Field(
+    unit: str | None = Field(
         default=None,
-        min_length=1,
         description="Unité de mesure associée à l'ingrédient (ex. g, kg, ml). None si non applicable.",
         examples=["g", "kg", "ml", None],
     )
