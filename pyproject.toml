@@ -6,15 +6,18 @@ build-backend = "hatchling.build"
 name = "rekipe-sample"
 version = "0.1.0"
 description = "Sample CRUD — built on arclith"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 dependencies = [
-    "arclith[mongodb,fastapi,mcp,duckdb]>=0.2.0",
-    "pydantic-ai[openai]>=0.2.0",
-    "chainlit>=2.0.0",
+    "arclith[mongodb,fastapi,mcp,duckdb]==0.2.0",
+    "pydantic-ai==1.69.0",
+    "chainlit==2.10.0",
 ]
 
 [tool.uv.sources]
 arclith = { path = "../framework", editable = true }
+
+[tool.mypy]
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
