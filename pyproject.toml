@@ -9,8 +9,6 @@ description = "Sample CRUD — built on arclith"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "arclith[mongodb,fastapi,mcp,duckdb]==0.2.0",
-    "pydantic-ai==1.69.0",
-    "chainlit==2.10.0",
 ]
 
 [tool.uv.sources]

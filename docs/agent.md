@@ -40,7 +40,7 @@ agent:
 
 ```bash
 cd _sample
-uv run python main_mcp_http.py --port 8002
+uv run python main_mcp_http.py
 ```
 
 Écoute sur `http://127.0.0.1:8001/mcp`.
@@ -49,7 +49,7 @@ uv run python main_mcp_http.py --port 8002
 
 ```bash
 cd _sample
-uv run chainlit run main_agent.py
+uv run chainlit run main_agent.py --port 8002
 ```
 
 UI disponible sur `http://localhost:8000`.
