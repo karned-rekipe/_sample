@@ -9,6 +9,7 @@ from adapters.input.schemas.ingredient_schema import (
     IngredientPatchSchema,
     IngredientSchema,
     IngredientUpdateSchema,
+    IngredientCreatedSchema,
 )
 from application.services.ingredient_service import IngredientService
 from arclith.domain.ports.logger import Logger
@@ -23,7 +24,7 @@ class IngredientRouter:
         self._register_routes()
 
     def _register_routes(self) -> None:
-        self.router.add_api_route("/", self.create_ingredient, methods = ["POST"], response_model = IngredientSchema,
+        self.router.add_api_route("/", self.create_ingredient, methods = ["POST"], response_model = IngredientCreatedSchema,
                                   status_code = 201, response_model_include = {"uuid"})
         self.router.add_api_route("/", self.list_ingredients, methods=["GET"], response_model=list[IngredientSchema])
         self.router.add_api_route("/purge", self.purge_ingredients, methods=["DELETE"], status_code=200)
