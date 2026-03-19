@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
+from uuid import UUID as StdUUID
 
 from arclith.adapters.input.schemas.base_schema import BaseSchema
 
@@ -42,6 +43,13 @@ class IngredientPatchSchema(IngredientCreateSchema):
 
 class IngredientUpdateSchema(IngredientCreateSchema):
     pass
+
+
+class IngredientCreatedSchema(BaseModel):
+    uuid: StdUUID = Field(
+        description="Identifiant unique de l'ingrédient créé (UUIDv7).",
+        examples=["01951234-5678-7abc-def0-123456789abc"],
+    )
 
 
 class IngredientSchema(BaseSchema):
