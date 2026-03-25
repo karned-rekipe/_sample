@@ -1,13 +1,12 @@
 adapters:
-  logger: console       # choix : console
+  logger: console
   repository: mongodb    # choix : memory  mongodb  duckdb
-  multitenant: false    # true = URI résolue par requête (vault via JWT)
+  multitenant: false
 
   mongodb:
-    uri: mongodb://localhost:5971  # ignoré si multitenant: true
-    db_name: _sample
+    db_name: _sample      # uri → secrets.yaml ou Vault
 
-  duckdb:               # formats : .csv | .parquet | .json | .arrow
+  duckdb:
     path: data/
 
 api:
@@ -20,9 +19,18 @@ mcp:
   port: 8001
 
 soft_delete:
-  # durée de rétention en jours avant suppression physique
-  # 0 = suppression immédiate (pas de soft delete)
-  # null = conservation infinie (jamais supprimé physiquement)
   retention_days: 30
 
+secrets:
+  resolver: chain
+  chain: [vault, yaml]
+  mappings:
+    adapters.mongodb.uri: rekipe/sample/mongodb
+
+  vault:
+    addr: http://127.0.0.1:8200
+    mount: kv
+
+  yaml:
+    path: secrets.yaml
 
