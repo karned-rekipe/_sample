@@ -57,7 +57,7 @@ cache:
 # ── Secrets ───────────────────────────────────────────────────────────────────
 
 secrets:
-  resolver: chain
+  resolver: vault
   chain: [vault, yaml]
   mappings:
     adapters.mongodb.uri: rekipe/sample/mongodb
