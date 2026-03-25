@@ -1,8 +1,7 @@
-from fastapi import FastAPI
-
-from arclith import Arclith
 from adapters.input.fastapi.routers import AdminRouter, IngredientRouter
-from infrastructure.ingredient_container import build_ingredient_service
+from arclith import Arclith
+from fastapi import FastAPI
+from infrastructure.containers.ingredient_container import build_ingredient_service
 from infrastructure.purge_registry import purge_registry
 
 

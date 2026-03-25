@@ -1,6 +1,6 @@
 from arclith.adapters.output.duckdb.repository import DuckDBRepository
 from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
+from domain.ports.output.ingredient_repository import IngredientRepository
 
 
 class DuckDBIngredientRepository(DuckDBRepository[Ingredient], IngredientRepository):
