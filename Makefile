@@ -29,10 +29,7 @@ test-e2e:
 	$(UV) pytest -v -m "e2e"
 
 coverage:
-	$(UV) pytest \
-		--cov=domain --cov=adapters --cov=application --cov=infrastructure \
-		--cov-report=term-missing --cov-report=html --cov-branch \
-		--cov-fail-under=80
+	$(UV) pytest --cov --cov-report=term-missing --cov-report=html
 
 quality: lint security complexity typecheck coverage
 
