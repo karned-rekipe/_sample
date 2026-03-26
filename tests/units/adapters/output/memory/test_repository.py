@@ -31,11 +31,11 @@ async def test_find_by_name_case_insensitive(repo):
     assert len(await repo.find_by_name("FARINE")) == 1
 
 
-async def test_find_by_name_includes_deleted(repo):
+async def test_find_by_name_excludes_deleted(repo):
     deleted = Ingredient(name="Farine", deleted_at=datetime.now(timezone.utc))
     await repo.create(deleted)
     result = await repo.find_by_name("farine")
-    assert len(result) == 1
+    assert len(result) == 0
 
 
 async def test_find_by_name_empty(repo):

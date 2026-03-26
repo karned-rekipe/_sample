@@ -33,20 +33,22 @@ async def client(app):
 
 @pytest.fixture
 async def created(client):
-    response = await client.post("/v1/ingredients/", json = _payload())
-    return response.json()
+    response = await client.post("/v1/ingredients/", json=_payload())
+    return response.json()["data"]
 
 
 # --- POST / ---
 
 async def test_create_returns_201(client):
-    response = await client.post("/v1/ingredients/", json = _payload())
+    response = await client.post("/v1/ingredients/", json=_payload())
     assert response.status_code == 201
 
 
 async def test_create_returns_uuid(client):
-    response = await client.post("/v1/ingredients/", json = _payload())
-    assert "uuid" in response.json()
+    response = await client.post("/v1/ingredients/", json=_payload())
+    data = response.json()
+    assert data["status"] == "success"
+    assert "uuid" in data["data"]
 
 
 # --- GET /{uuid} ---
@@ -56,8 +58,9 @@ async def test_get_found(client, created):
     response = await client.get(f"/v1/ingredients/{uuid}")
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "Farine"
-    assert data["unit"] == "kg"
+    assert data["status"] == "success"
+    assert data["data"]["name"] == "Farine"
+    assert data["data"]["unit"] == "kg"
 
 
 async def test_get_not_found(client):
@@ -75,25 +78,26 @@ async def test_update_returns_204(client, created):
 
 async def test_update_reflects_on_get(client, created):
     uuid = created["uuid"]
-    await client.put(f"/v1/ingredients/{uuid}", json = _payload(name = "Farine complète", unit = "g"))
+    await client.put(f"/v1/ingredients/{uuid}", json=_payload(name="Farine complète", unit="g"))
     response = await client.get(f"/v1/ingredients/{uuid}")
-    assert response.json()["name"] == "Farine complète"
+    assert response.json()["data"]["name"] == "Farine complète"
 
 
 # --- PATCH /{uuid} ---
 
 async def test_patch_found_returns_204(client, created):
     uuid = created["uuid"]
-    response = await client.patch(f"/v1/ingredients/{uuid}", json = _payload(name = "Farine T80"))
+    response = await client.patch(f"/v1/ingredients/{uuid}", json=_payload(name="Farine T80"))
     assert response.status_code == 204
 
 
 async def test_patch_preserves_unset_fields(client, created):
     uuid = created["uuid"]
-    await client.patch(f"/v1/ingredients/{uuid}", json = _payload(name = "Farine T80"))
+    await client.patch(f"/v1/ingredients/{uuid}", json=_payload(name="Farine T80"))
     response = await client.get(f"/v1/ingredients/{uuid}")
-    assert response.json()["name"] == "Farine T80"
-    assert response.json()["unit"] == "kg"
+    data = response.json()["data"]
+    assert data["name"] == "Farine T80"
+    assert data["unit"] == "kg"
 
 
 async def test_patch_not_found_returns_404(client):
@@ -124,32 +128,41 @@ async def test_delete_hides_from_get(client, created):
 async def test_list_empty(client):
     response = await client.get("/v1/ingredients/")
     assert response.status_code == 200
-    assert response.json() == []
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["data"] == []
+    assert data["pagination"]["total"] == 0
 
 
 async def test_list_returns_all(client):
-    await client.post("/v1/ingredients/", json = _payload(name = "Farine"))
-    await client.post("/v1/ingredients/", json = _payload(name = "Sel"))
+    await client.post("/v1/ingredients/", json=_payload(name="Farine"))
+    await client.post("/v1/ingredients/", json=_payload(name="Sel"))
     response = await client.get("/v1/ingredients/")
     assert response.status_code == 200
-    assert len(response.json()) == 2
+    data = response.json()
+    assert len(data["data"]) == 2
+    assert data["pagination"]["total"] == 2
+    assert response.headers.get("x-total-count") == "2"
 
 
 async def test_list_filtered_by_name(client):
-    await client.post("/v1/ingredients/", json = _payload(name = "Farine de blé"))
-    await client.post("/v1/ingredients/", json = _payload(name = "Sel fin"))
-    response = await client.get("/v1/ingredients/", params = {"name": "farine"})
+    await client.post("/v1/ingredients/", json=_payload(name="Farine de blé"))
+    await client.post("/v1/ingredients/", json=_payload(name="Sel fin"))
+    response = await client.get("/v1/ingredients/", params={"name": "farine"})
     assert response.status_code == 200
-    results = response.json()
-    assert len(results) == 1
-    assert results[0]["name"] == "Farine de blé"
+    data = response.json()
+    assert len(data["data"]) == 1
+    assert data["data"][0]["name"] == "Farine de blé"
+    assert data["pagination"]["total"] == 1
 
 
 async def test_list_filter_no_match(client):
-    await client.post("/v1/ingredients/", json = _payload(name = "Sel"))
-    response = await client.get("/v1/ingredients/", params = {"name": "sucre"})
+    await client.post("/v1/ingredients/", json=_payload(name="Sel"))
+    response = await client.get("/v1/ingredients/", params={"name": "sucre"})
     assert response.status_code == 200
-    assert response.json() == []
+    data = response.json()
+    assert data["data"] == []
+    assert data["pagination"]["total"] == 0
 
 
 # --- POST /{uuid}/duplicate ---
@@ -163,7 +176,9 @@ async def test_duplicate_returns_201(client, created):
 async def test_duplicate_has_different_uuid(client, created):
     uuid = created["uuid"]
     response = await client.post(f"/v1/ingredients/{uuid}/duplicate")
-    assert response.json()["uuid"] != uuid
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["data"]["uuid"] != uuid
 
 
 # --- DELETE /purge ---

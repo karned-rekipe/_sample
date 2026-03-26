@@ -1,3 +1,7 @@
+app:
+  name: rekipe-sample
+  version: "0.1.0"
+
 adapters:
   logger: console
   repository: mongodb    # choix : memory  mongodb  duckdb
@@ -21,6 +25,11 @@ mcp:
 soft_delete:
   retention_days: 30
 
+probe:
+  host: 0.0.0.0
+  port: 9000
+  enabled: true
+
 secrets:
   resolver: chain
   chain: [vault, yaml]
@@ -28,7 +37,7 @@ secrets:
     adapters.mongodb.uri: rekipe/sample/mongodb
 
   vault:
-    addr: http://127.0.0.1:8200
+    addr: http://127.0.0.1:5991
     mount: kv
 
   yaml:

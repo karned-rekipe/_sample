@@ -1,6 +1,7 @@
+from typing import Annotated
 from uuid import UUID as StdUUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from uuid6 import UUID
 
 from adapters.input.fastapi.dependencies import inject_tenant_uri
@@ -9,9 +10,16 @@ from adapters.input.schemas.ingredient_schema import (
     IngredientPatchSchema,
     IngredientSchema,
     IngredientUpdateSchema,
-    IngredientCreatedSchema,
 )
 from application.services.ingredient_service import IngredientService
+from arclith.adapters.input.fastapi.dependencies import get_duration_ms
+from arclith.adapters.input.schemas.response_wrapper import (
+    ApiResponse,
+    PaginatedResponse,
+    ResponseMetadata,
+    paginated_response,
+    success_response,
+)
 from arclith.domain.ports.logger import Logger
 from domain.models.ingredient import Ingredient
 
@@ -25,96 +33,95 @@ class IngredientRouter:
 
     def _register_routes(self) -> None:
         self.router.add_api_route(
-            methods = ["POST"],
-            path = "/",
-            endpoint = self.create_ingredient,
-            summary = "Create ingredient",
-            response_model = IngredientCreatedSchema,
-            response_description = "UUID of the created ingredient",
-            status_code = 201,
+            methods=["POST"],
+            path="/",
+            endpoint=self.create_ingredient,
+            summary="Create ingredient",
+            response_model=ApiResponse[IngredientSchema],
+            status_code=201,
         )
         self.router.add_api_route(
-            methods = ["GET"],
-            path = "/",
-            endpoint = self.list_ingredients,
-            summary = "List ingredients",
-            response_model = list[IngredientSchema],
-            response_description = "List of active ingredients",
+            methods=["GET"],
+            path="/",
+            endpoint=self.list_ingredients,
+            summary="List ingredients",
+            response_model=PaginatedResponse[IngredientSchema],
         )
         self.router.add_api_route(
-            methods = ["DELETE"],
-            path = "/purge",
-            endpoint = self.purge_ingredients,
-            summary = "Purge soft-deleted ingredients",
-            response_description = "Number of permanently deleted records",
-            status_code = 200,
+            methods=["DELETE"],
+            path="/purge",
+            endpoint=self.purge_ingredients,
+            summary="Purge soft-deleted ingredients",
+            status_code=200,
         )
         self.router.add_api_route(
-            methods = ["GET"],
-            path = "/{uuid}",
-            endpoint = self.get_ingredient,
-            summary = "Get ingredient",
-            response_model = IngredientSchema,
-            response_description = "The ingredient",
-            responses = {404: {"description": "Ingredient not found"}},
+            methods=["GET"],
+            path="/{uuid}",
+            endpoint=self.get_ingredient,
+            summary="Get ingredient",
+            response_model=ApiResponse[IngredientSchema],
+            responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
-            methods = ["PUT"],
-            path = "/{uuid}",
-            endpoint = self.update_ingredient,
-            summary = "Replace ingredient",
-            status_code = 204,
-            responses = {404: {"description": "Ingredient not found"}},
+            methods=["PUT"],
+            path="/{uuid}",
+            endpoint=self.update_ingredient,
+            summary="Replace ingredient",
+            status_code=204,
+            responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
-            methods = ["PATCH"],
-            path = "/{uuid}",
-            endpoint = self.patch_ingredient,
-            summary = "Partially update ingredient",
-            status_code = 204,
-            responses = {404: {"description": "Ingredient not found"}},
+            methods=["PATCH"],
+            path="/{uuid}",
+            endpoint=self.patch_ingredient,
+            summary="Partially update ingredient",
+            status_code=204,
+            responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
-            methods = ["DELETE"],
-            path = "/{uuid}",
-            endpoint = self.delete_ingredient,
-            summary = "Delete ingredient",
-            status_code = 204,
+            methods=["DELETE"],
+            path="/{uuid}",
+            endpoint=self.delete_ingredient,
+            summary="Delete ingredient",
+            status_code=204,
         )
         self.router.add_api_route(
-            methods = ["POST"],
-            path = "/{uuid}/duplicate",
-            endpoint = self.duplicate_ingredient,
-            summary = "Duplicate ingredient",
-            response_model = IngredientCreatedSchema,
-            response_description = "UUID of the duplicated ingredient",
-            status_code = 201,
+            methods=["POST"],
+            path="/{uuid}/duplicate",
+            endpoint=self.duplicate_ingredient,
+            summary="Duplicate ingredient",
+            response_model=ApiResponse[IngredientSchema],
+            status_code=201,
         )
 
     @staticmethod
     def _to_uuid6(uuid: StdUUID) -> UUID:
         return UUID(str(uuid))
 
-    async def create_ingredient(self, payload: IngredientCreateSchema) -> IngredientCreatedSchema:
-        """Create a new reusable ingredient.
-
-        Returns the UUID of the created ingredient.
-        Once created, use `POST /v1/recipes/{uuid}/ingredients/{ingredient_uuid}` to attach it to a recipe.
-        """
+    async def create_ingredient(
+        self,
+        payload: IngredientCreateSchema,
+        duration_ms: Annotated[float, Depends(get_duration_ms)],
+    ) -> ApiResponse[IngredientSchema]:
         result = await self._service.create(Ingredient(name=payload.name, unit=payload.unit))
-        return IngredientCreatedSchema(uuid = result.uuid)
+        return success_response(
+            IngredientSchema.model_validate(result, from_attributes=True),
+            metadata=ResponseMetadata(duration_ms=int(duration_ms)),
+        )
 
-    async def get_ingredient(self, uuid: StdUUID) -> IngredientSchema:
-        """Get an ingredient by its UUID.
-
-        Returns the full ingredient object.
-        Fields: uuid, name, unit, created_at, updated_at, version.
-        """
+    async def get_ingredient(
+        self,
+        uuid: StdUUID,
+        duration_ms: Annotated[float, Depends(get_duration_ms)],
+    ) -> ApiResponse[IngredientSchema]:
         result = await self._service.read(self._to_uuid6(uuid))
         if result is None:
             self._logger.warning("⚠️ Ingredient not found via HTTP", uuid=str(uuid))
             raise HTTPException(status_code=404, detail="Ingredient not found")
-        return IngredientSchema.model_validate(result, from_attributes = True)
+        return success_response(
+            IngredientSchema.model_validate(result, from_attributes=True),
+            metadata=ResponseMetadata(duration_ms=int(duration_ms)),
+        )
 
     async def update_ingredient(self, uuid: StdUUID, payload: IngredientUpdateSchema) -> None:
         """Replace name and unit of an existing ingredient (PUT semantics).
@@ -151,29 +158,33 @@ class IngredientRouter:
 
     async def list_ingredients(
         self,
-        name: str | None = Query(
-            default=None,
-            min_length=1,
-            description = "Filtre optionnel : recherche partielle sur le nom, insensible à la casse. Ex: 'far' retournera 'Farine de blé'.",
-            examples=["farine"],
-        ),
-    ) -> list[IngredientSchema]:
-        """List all active (non-deleted) ingredients.
+        response: Response,
+        duration_ms: Annotated[float, Depends(get_duration_ms)],
+        page: int = Query(1, ge=1, description="Page number (1-indexed)"),
+        per_page: int = Query(20, ge=1, le=100, description="Items per page"),
+        name: str | None = Query(None, min_length=1, description="Filter by name (partial, case-insensitive)"),
+    ) -> PaginatedResponse[IngredientSchema]:
+        offset = (page - 1) * per_page
+        items, total = await self._service.find_page_filtered(name=name, offset=offset, limit=per_page)
+        response.headers["X-Total-Count"] = str(total)
+        return paginated_response(
+            data=[IngredientSchema.model_validate(i, from_attributes=True) for i in items],
+            total=total,
+            page=page,
+            per_page=per_page,
+            metadata=ResponseMetadata(duration_ms=int(duration_ms)),
+        )
 
-        Pass `name` for a partial, case-insensitive name filter.
-        Each item: uuid, name, unit, created_at, updated_at, version.
-        """
-        items = await self._service.find_by_name(name) if name else await self._service.find_all()
-        return [IngredientSchema.model_validate(i, from_attributes = True) for i in items]
-
-    async def duplicate_ingredient(self, uuid: StdUUID) -> IngredientCreatedSchema:
-        """Duplicate an ingredient, assigning it a new UUID.
-
-        Creates an independent copy with the same name and unit.
-        Returns the UUID of the new ingredient.
-        """
+    async def duplicate_ingredient(
+        self,
+        uuid: StdUUID,
+        duration_ms: Annotated[float, Depends(get_duration_ms)],
+    ) -> ApiResponse[IngredientSchema]:
         result = await self._service.duplicate(self._to_uuid6(uuid))
-        return IngredientCreatedSchema(uuid = result.uuid)
+        return success_response(
+            IngredientSchema.model_validate(result, from_attributes=True),
+            metadata=ResponseMetadata(duration_ms=int(duration_ms)),
+        )
 
     async def purge_ingredients(self) -> dict:
         """Permanently delete soft-deleted ingredients that have exceeded the retention period.
