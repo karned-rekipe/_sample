@@ -10,15 +10,16 @@ ProbeServer always starts on :9000 (probe.enabled=true in config.yaml).
 """
 from __future__ import annotations
 
-import os
-import sys
 from pathlib import Path
 
-from arclith import Arclith
+import os
+import sys
+
 from adapters.input.fastapi.router import register_routers
 from adapters.input.fastmcp.prompts import IngredientPrompts
 from adapters.input.fastmcp.resources import IngredientResources
 from adapters.input.fastmcp.tools import IngredientMCP
+from arclith import Arclith
 from infrastructure.container import build_ingredient_service
 from infrastructure.logging_setup import setup_logging
 
@@ -34,15 +35,16 @@ if MODE not in _VALID_MODES:
 
 arclith = Arclith(_CONFIG)
 
+# ── FastAPI app exposed at module level for PyCharm / uvicorn ─────────────────
+app = arclith.fastapi()
+register_routers(app, arclith)
+
 
 # ── runner factories ──────────────────────────────────────────────────────────
 
 def _make_api_runner():
-    app = arclith.fastapi()
-    register_routers(app, arclith)
-
     def _run() -> None:
-        arclith.run_api(app)
+        arclith.run_api("main:app")
 
     return _run
 

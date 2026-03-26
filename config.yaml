@@ -37,7 +37,7 @@ secrets:
     adapters.mongodb.uri: rekipe/sample/mongodb
 
   vault:
-    addr: http://127.0.0.1:8200
+    addr: http://127.0.0.1:5991
     mount: kv
 
   yaml:
