@@ -9,3 +9,20 @@ dist/
 .hatch/
 *.dist-info/
 .chainlit/translations/
+
+# secrets — ne jamais committer
+secrets.yaml
+
+# artefacts de test / qualité
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# données locales
+data/
+
+# macOS
+.DS_Store
+
