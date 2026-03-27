@@ -70,4 +70,5 @@ uv sync
 1. `infrastructure/ingredient_container.py` — pattern de référence pour un container (alternative à `recipe/`)
 2. `adapters/input/fastmcp/*_tools.py` — pattern simplifié de registration MCP
 3. `config.yaml` — configuration minimale pour le dev local
+4. `../framework/docs/http-conventions.md` — conventions HTTP/REST SOTA
 

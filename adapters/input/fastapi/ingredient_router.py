@@ -46,6 +46,7 @@ class IngredientRouter:
             endpoint=self.list_ingredients,
             summary="List ingredients",
             response_model=PaginatedResponse[IngredientSchema],
+            status_code=200,
         )
         self.router.add_api_route(
             methods=["DELETE"],
@@ -60,6 +61,7 @@ class IngredientRouter:
             endpoint=self.get_ingredient,
             summary="Get ingredient",
             response_model=ApiResponse[IngredientSchema],
+            status_code=200,
             responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
@@ -84,6 +86,7 @@ class IngredientRouter:
             endpoint=self.delete_ingredient,
             summary="Delete ingredient",
             status_code=204,
+            responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
             methods=["POST"],
@@ -92,6 +95,7 @@ class IngredientRouter:
             summary="Duplicate ingredient",
             response_model=ApiResponse[IngredientSchema],
             status_code=201,
+            responses={404: {"description": "Ingredient not found"}},
         )
 
     @staticmethod
