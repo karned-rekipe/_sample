@@ -16,9 +16,23 @@ import os
 import sys
 
 from adapters.input.fastapi.router import register_routers
-from adapters.input.fastmcp.prompts import register_prompts
-from adapters.input.fastmcp.resources import register_resources
-from adapters.input.fastmcp.tools import register_tools
+
+# ── MCP registration imports ──────────────────────────────────────────────────
+# Structure :
+#   - tools.py / prompts.py / resources.py → fichiers de registration (register_*)
+#   - tools/ prompts/ resources/ → sous-dossiers avec les implémentations par entité
+#
+# Nommage pour éviter les conflits Python (package vs module) :
+#   import adapters.input.fastmcp.tools as tools_module
+#
+# Pour ajouter une nouvelle entité (ex: Recipe) :
+#   1. Créer tools/recipe_tools.py, prompts/recipe_prompts.py, resources/recipe_resources.py
+#   2. Exporter dans les __init__.py respectifs : from .recipe_tools import RecipeMCP
+#   3. Ajouter l'instanciation dans les fonctions register_* (tools.py, prompts.py, resources.py)
+
+import adapters.input.fastmcp.prompts as prompts_module
+import adapters.input.fastmcp.resources as resources_module
+import adapters.input.fastmcp.tools as tools_module
 from arclith import Arclith
 from infrastructure.logging_setup import setup_logging
 
@@ -50,9 +64,9 @@ def _make_api_runner():
 
 def _make_mcp_runner(transport: str):
     mcp = arclith.fastmcp(f"Rekipe-sample ({transport})")
-    register_tools(mcp, arclith)
-    register_prompts(mcp, arclith)
-    register_resources(mcp, arclith)
+    tools_module.register_tools(mcp, arclith)
+    prompts_module.register_prompts(mcp, arclith)
+    resources_module.register_resources(mcp, arclith)
     arclith.instrument_mcp(mcp)
 
     match transport:
