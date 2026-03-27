@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 import fastmcp
 import pytest
 
-from adapters.input.fastmcp.ingredient_tools import IngredientMCP
+from adapters.input.fastmcp.tools import IngredientMCP
 from application.services.ingredient_service import IngredientService
 
 
@@ -20,7 +20,7 @@ def service(repo, logger):
 
 @pytest.fixture
 async def client(service, logger, mcp_app):
-    with patch("adapters.input.fastmcp.ingredient_tools.inject_tenant_uri", new = AsyncMock()):
+    with patch("adapters.input.fastmcp.tools.ingredient_tools.inject_tenant_uri", new = AsyncMock()):
         IngredientMCP(service, logger, mcp_app)
         async with fastmcp.Client(mcp_app) as c:
             yield c
