@@ -16,11 +16,10 @@ import os
 import sys
 
 from adapters.input.fastapi.router import register_routers
-from adapters.input.fastmcp.prompts import IngredientPrompts
-from adapters.input.fastmcp.resources import IngredientResources
-from adapters.input.fastmcp.tools import IngredientMCP
+from adapters.input.fastmcp.prompts import register_prompts
+from adapters.input.fastmcp.resources import register_resources
+from adapters.input.fastmcp.tools import register_tools
 from arclith import Arclith
-from infrastructure.container import build_ingredient_service
 from infrastructure.logging_setup import setup_logging
 
 _logger = setup_logging()
@@ -50,11 +49,10 @@ def _make_api_runner():
 
 
 def _make_mcp_runner(transport: str):
-    service, logger = build_ingredient_service(arclith)
     mcp = arclith.fastmcp(f"Rekipe-sample ({transport})")
-    IngredientMCP(service, logger, mcp)
-    IngredientResources(service, logger, mcp)
-    IngredientPrompts(service, logger, mcp)
+    register_tools(mcp, arclith)
+    register_prompts(mcp, arclith)
+    register_resources(mcp, arclith)
     arclith.instrument_mcp(mcp)
 
     match transport:

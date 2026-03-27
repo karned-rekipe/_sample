@@ -31,14 +31,14 @@ adapters/
   input/
     fastapi/
       routers/ingredient_router.py     # REST
-      router.py                        # Register routers
+      router.py                        # Register routers (point d'entrée)
     fastmcp/
       tools/ingredient_tools.py        # MCP tools
-      tools.py                         # Register tools
+      tools.py                         # Register tools (point d'entrée)
       prompts/ingredient_prompts.py    # MCP prompts
-      prompts/__init__.py              # Export prompts
+      prompts.py                       # Register prompts (point d'entrée)
       resources/ingredient_resources.py # MCP resources
-      resources/__init__.py            # Export resources
+      resources.py                     # Register resources (point d'entrée)
   output/
     mongodb/repository.py
     duckdb/repository.py
