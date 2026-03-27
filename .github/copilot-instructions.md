@@ -8,4 +8,5 @@ Sandbox R&D uniquement. Sert à tester et faire evoluer `arclith` avant publicat
 - Toujours utiliser `arclith` en mode editable depuis `../framework` pour tester les changements locaux.
 - Ne pas ajouter de logique metier persistante — c est un terrain d experimentation.
 - Lire `framework/AGENTS.md` avant de modifier quoi que ce soit ici.
+- **HTTP Status Codes** : toujours declarer explicitement `status_code` et `responses` dans FastAPI. Voir `docs/http-conventions.md`.
 

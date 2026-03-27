@@ -29,8 +29,16 @@ application/
 
 adapters/
   input/
-    fastapi/*_router.py     # REST
-    fastmcp/*_tools.py      # MCP
+    fastapi/
+      routers/ingredient_router.py     # REST
+      router.py                        # Register routers (point d'entrée)
+    fastmcp/
+      tools/ingredient_tools.py        # MCP tools
+      tools.py                         # Register tools (point d'entrée)
+      prompts/ingredient_prompts.py    # MCP prompts
+      prompts.py                       # Register prompts (point d'entrée)
+      resources/ingredient_resources.py # MCP resources
+      resources.py                     # Register resources (point d'entrée)
   output/
     mongodb/repository.py
     duckdb/repository.py
@@ -68,6 +76,8 @@ uv sync
 ## Fichiers à lire en premier
 
 1. `infrastructure/ingredient_container.py` — pattern de référence pour un container (alternative à `recipe/`)
-2. `adapters/input/fastmcp/*_tools.py` — pattern simplifié de registration MCP
-3. `config.yaml` — configuration minimale pour le dev local
+2. `adapters/input/fastmcp/tools/ingredient_tools.py` — pattern simplifié de registration MCP
+3. `adapters/input/fastapi/routers/ingredient_router.py` — pattern REST conforme HTTP conventions
+4. `config.yaml` — configuration minimale pour le dev local
+5. `../framework/docs/http-conventions.md` — conventions HTTP/REST SOTA
 

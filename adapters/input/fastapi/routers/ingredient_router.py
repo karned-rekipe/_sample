@@ -46,6 +46,7 @@ class IngredientRouter:
             endpoint=self.list_ingredients,
             summary="List ingredients",
             response_model=PaginatedResponse[IngredientSchema],
+            status_code=200,
         )
         self.router.add_api_route(
             methods=["DELETE"],
@@ -60,6 +61,7 @@ class IngredientRouter:
             endpoint=self.get_ingredient,
             summary="Get ingredient",
             response_model=ApiResponse[IngredientSchema],
+            status_code=200,
             responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
@@ -84,6 +86,7 @@ class IngredientRouter:
             endpoint=self.delete_ingredient,
             summary="Delete ingredient",
             status_code=204,
+            responses={404: {"description": "Ingredient not found"}},
         )
         self.router.add_api_route(
             methods=["POST"],
@@ -92,6 +95,7 @@ class IngredientRouter:
             summary="Duplicate ingredient",
             response_model=ApiResponse[IngredientSchema],
             status_code=201,
+            responses={404: {"description": "Ingredient not found"}},
         )
 
     @staticmethod
@@ -103,6 +107,11 @@ class IngredientRouter:
         payload: IngredientCreateSchema,
         duration_ms: Annotated[float, Depends(get_duration_ms)],
     ) -> ApiResponse[IngredientSchema]:
+        """Create a new reusable ingredient.
+
+        Returns the UUID of the created ingredient.
+        Once created, use `POST /v1/recipes/{uuid}/ingredients/{ingredient_uuid}` to attach it to a recipe.
+        """
         result = await self._service.create(Ingredient(name=payload.name, unit=payload.unit))
         return success_response(
             IngredientSchema.model_validate(result, from_attributes=True),
@@ -114,6 +123,11 @@ class IngredientRouter:
         uuid: StdUUID,
         duration_ms: Annotated[float, Depends(get_duration_ms)],
     ) -> ApiResponse[IngredientSchema]:
+        """Get an ingredient by its UUID.
+
+        Returns the full ingredient object.
+        Fields: uuid, name, unit, created_at, updated_at, version.
+        """
         result = await self._service.read(self._to_uuid6(uuid))
         if result is None:
             self._logger.warning("⚠️ Ingredient not found via HTTP", uuid=str(uuid))
@@ -164,6 +178,12 @@ class IngredientRouter:
         per_page: int = Query(20, ge=1, le=100, description="Items per page"),
         name: str | None = Query(None, min_length=1, description="Filter by name (partial, case-insensitive)"),
     ) -> PaginatedResponse[IngredientSchema]:
+        """List all active (non-deleted) ingredients.
+
+        Pass `name` for a partial, case-insensitive name filter.
+        Each item: uuid, name, unit, created_at, updated_at, version.
+        Use the returned UUIDs with `POST /v1/recipes/{uuid}/ingredients/{ingredient_uuid}` to link them to a recipe.
+        """
         offset = (page - 1) * per_page
         items, total = await self._service.find_page_filtered(name=name, offset=offset, limit=per_page)
         response.headers["X-Total-Count"] = str(total)
@@ -180,6 +200,11 @@ class IngredientRouter:
         uuid: StdUUID,
         duration_ms: Annotated[float, Depends(get_duration_ms)],
     ) -> ApiResponse[IngredientSchema]:
+        """Duplicate an ingredient, assigning it a new UUID.
+
+        Creates an independent copy with the same name and unit.
+        Returns the UUID of the new ingredient.
+        """
         result = await self._service.duplicate(self._to_uuid6(uuid))
         return success_response(
             IngredientSchema.model_validate(result, from_attributes=True),

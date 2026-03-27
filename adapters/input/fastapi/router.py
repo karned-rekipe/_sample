@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from arclith import Arclith
-from adapters.input.fastapi.ingredient_router import IngredientRouter
+from adapters.input.fastapi.routers import IngredientRouter
 from infrastructure.ingredient_container import build_ingredient_service
 
 

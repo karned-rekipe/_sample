@@ -16,11 +16,24 @@ import os
 import sys
 
 from adapters.input.fastapi.router import register_routers
-from adapters.input.fastmcp.prompts import IngredientPrompts
-from adapters.input.fastmcp.resources import IngredientResources
-from adapters.input.fastmcp.tools import IngredientMCP
+
+# ── MCP registration imports ──────────────────────────────────────────────────
+# Structure :
+#   - tools.py / prompts.py / resources.py → fichiers de registration (register_*)
+#   - tools/ prompts/ resources/ → sous-dossiers avec les implémentations par entité
+#
+# Nommage pour éviter les conflits Python (package vs module) :
+#   import adapters.input.fastmcp.tools as tools_module
+#
+# Pour ajouter une nouvelle entité (ex: Recipe) :
+#   1. Créer tools/recipe_tools.py, prompts/recipe_prompts.py, resources/recipe_resources.py
+#   2. Exporter dans les __init__.py respectifs : from .recipe_tools import RecipeMCP
+#   3. Ajouter l'instanciation dans les fonctions register_* (tools.py, prompts.py, resources.py)
+
+import adapters.input.fastmcp.prompts as prompts_module
+import adapters.input.fastmcp.resources as resources_module
+import adapters.input.fastmcp.tools as tools_module
 from arclith import Arclith
-from infrastructure.container import build_ingredient_service
 from infrastructure.logging_setup import setup_logging
 
 _logger = setup_logging()
@@ -50,11 +63,10 @@ def _make_api_runner():
 
 
 def _make_mcp_runner(transport: str):
-    service, logger = build_ingredient_service(arclith)
     mcp = arclith.fastmcp(f"Rekipe-sample ({transport})")
-    IngredientMCP(service, logger, mcp)
-    IngredientResources(service, logger, mcp)
-    IngredientPrompts(service, logger, mcp)
+    tools_module.register_tools(mcp, arclith)
+    prompts_module.register_prompts(mcp, arclith)
+    resources_module.register_resources(mcp, arclith)
     arclith.instrument_mcp(mcp)
 
     match transport:

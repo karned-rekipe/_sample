@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient, ASGITransport
 
 from adapters.input.fastapi.dependencies import inject_tenant_uri
-from adapters.input.fastapi.ingredient_router import IngredientRouter
+from adapters.input.fastapi.routers import IngredientRouter
 from application.services.ingredient_service import IngredientService
 
 
