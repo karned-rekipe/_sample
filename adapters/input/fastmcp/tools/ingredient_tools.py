@@ -5,7 +5,7 @@ import fastmcp
 from pydantic import Field
 from uuid6 import UUID
 
-from adapters.input.fastmcp.dependencies import inject_tenant_uri
+from adapters.input.fastmcp.dependencies import inject_tenant_uri, require_auth_mcp
 from adapters.input.schemas.ingredient_schema import IngredientSchema
 from application.services.ingredient_service import IngredientService
 from arclith.domain.ports.logger import Logger
@@ -44,6 +44,7 @@ class IngredientMCP:
             Once created, use `link_ingredient_to_recipe` to attach it to a recipe.
             Fields returned: uuid, name, unit, created_at, updated_at, version.
             """
+            await require_auth_mcp(ctx)
             await inject_tenant_uri(ctx)
             result = await service.create(Ingredient(name=name, unit=unit))
             logger.info("✅ Ingredient created via MCP", uuid = str(result.uuid), name = result.name)
@@ -102,6 +103,7 @@ class IngredientMCP:
             It is retained until the purge retention period expires.
             Use `purge_ingredients` to permanently remove expired entries.
             """
+            await require_auth_mcp(ctx)
             await inject_tenant_uri(ctx)
             await service.delete(to_uuid6(StdUUID(uuid)))
             logger.info("✅ Ingredient deleted via MCP", uuid = uuid)
@@ -140,15 +142,4 @@ class IngredientMCP:
             logger.info("✅ Ingredient duplicated via MCP", source_uuid = uuid, new_uuid = str(result.uuid))
             return IngredientSchema.model_validate(result).model_dump()
 
-        @self._mcp.tool
-        async def purge_ingredients(ctx: fastmcp.Context | None = None) -> dict:
-            """Permanently delete soft-deleted ingredients that have exceeded the retention period.
-
-            Returns {"purged": <count>} with the number of permanently deleted records.
-            This operation is irreversible.
-            """
-            await inject_tenant_uri(ctx)
-            purged = await service.purge()
-            logger.info("✅ Ingredients purged via MCP", count = purged)
-            return {"purged": purged}
 

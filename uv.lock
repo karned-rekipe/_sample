@@ -83,20 +83,26 @@ requires-dist = [
     { name = "fastmcp", specifier = ">=3.1.0" },
     { name = "fastmcp", marker = "extra == 'all'", specifier = "==3.1.0" },
     { name = "fastmcp", marker = "extra == 'mcp'", specifier = "==3.1.0" },
+    { name = "httpx", marker = "extra == 'all'", specifier = ">=0.27.0" },
+    { name = "httpx", marker = "extra == 'auth'", specifier = ">=0.27.0" },
     { name = "hvac", marker = "extra == 'all'", specifier = "==2.3.0" },
     { name = "hvac", marker = "extra == 'vault'", specifier = "==2.3.0" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "motor", marker = "extra == 'all'", specifier = "==3.7.1" },
     { name = "motor", marker = "extra == 'mongodb'", specifier = "==3.7.1" },
     { name = "pydantic", specifier = "==2.12.5" },
+    { name = "pyjwt", extras = ["cryptography"], marker = "extra == 'all'", specifier = ">=2.8.0" },
+    { name = "pyjwt", extras = ["cryptography"], marker = "extra == 'auth'", specifier = ">=2.8.0" },
     { name = "pytz", marker = "extra == 'all'", specifier = "==2024.1" },
     { name = "pytz", marker = "extra == 'duckdb'", specifier = "==2024.1" },
     { name = "pyyaml", specifier = "==6.0.3" },
+    { name = "redis", marker = "extra == 'all'", specifier = ">=5.0.0" },
+    { name = "redis", marker = "extra == 'cache'", specifier = ">=5.0.0" },
     { name = "uuid6", specifier = "==2025.0.1" },
     { name = "uvicorn", marker = "extra == 'all'", specifier = "==0.41.0" },
     { name = "uvicorn", marker = "extra == 'fastapi'", specifier = "==0.41.0" },
 ]
-provides-extras = ["mongodb", "duckdb", "fastapi", "mcp", "vault", "all"]
+provides-extras = ["mongodb", "duckdb", "fastapi", "mcp", "vault", "cache", "auth", "all"]
 
 [package.metadata.requires-dev]
 dev = [
