@@ -1,6 +1,3 @@
-from typing import Annotated
-from uuid import UUID as StdUUID
-
 import fastmcp
 from pydantic import Field
 from uuid6 import UUID
@@ -10,6 +7,8 @@ from adapters.input.schemas.ingredient_schema import IngredientSchema
 from application.services.ingredient_service import IngredientService
 from arclith.domain.ports.logger import Logger
 from domain.models.ingredient import Ingredient
+from typing import Annotated
+from uuid import UUID as StdUUID
 
 
 class IngredientMCP:
@@ -46,7 +45,7 @@ class IngredientMCP:
             """
             await require_auth_mcp(ctx)
             await inject_tenant_uri(ctx)
-            result = await service.create(Ingredient(name=name, unit=unit))
+            result = await service.create(Ingredient(name = name, unit = unit))
             logger.info("✅ Ingredient created via MCP", uuid = str(result.uuid), name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
@@ -64,7 +63,7 @@ class IngredientMCP:
             await inject_tenant_uri(ctx)
             result = await service.read(to_uuid6(StdUUID(uuid)))
             if result is None:
-                logger.warning("⚠️ Ingredient not found via MCP", uuid=uuid)
+                logger.warning("⚠️ Ingredient not found via MCP", uuid = uuid)
                 return None
             logger.info("✅ Ingredient fetched via MCP", uuid = uuid, name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
@@ -87,7 +86,7 @@ class IngredientMCP:
             Note: updating an ingredient does not propagate to recipes where it is already linked (snapshot model).
             """
             await inject_tenant_uri(ctx)
-            result = await service.update(Ingredient(uuid=to_uuid6(StdUUID(uuid)), name=name, unit=unit))
+            result = await service.update(Ingredient(uuid = to_uuid6(StdUUID(uuid)), name = name, unit = unit))
             logger.info("✅ Ingredient updated via MCP", uuid = uuid, name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
@@ -141,5 +140,4 @@ class IngredientMCP:
             result = await service.duplicate(to_uuid6(StdUUID(uuid)))
             logger.info("✅ Ingredient duplicated via MCP", source_uuid = uuid, new_uuid = str(result.uuid))
             return IngredientSchema.model_validate(result).model_dump()
-
 

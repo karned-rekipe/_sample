@@ -4,7 +4,7 @@ from arclith.adapters.output.mongodb.config import MongoDBConfig
 from arclith.adapters.output.mongodb.repository import MongoDBRepository
 from arclith.domain.ports.logger import Logger
 from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
+from domain.ports.output.ingredient_repository import IngredientRepository
 
 
 class MongoDBIngredientRepository(MongoDBRepository[Ingredient], IngredientRepository):

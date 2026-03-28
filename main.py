@@ -15,7 +15,7 @@ from pathlib import Path
 import os
 import sys
 
-from adapters.input.fastapi.router import register_routers
+from adapters.input.fastapi.register import register_routers
 
 # ── MCP registration imports ──────────────────────────────────────────────────
 # Structure :
@@ -32,7 +32,7 @@ from adapters.input.fastapi.router import register_routers
 
 import adapters.input.fastmcp.prompts as prompts_module
 import adapters.input.fastmcp.resources as resources_module
-import adapters.input.fastmcp.tools as tools_module
+import adapters.input.fastmcp.register as tools_module
 from arclith import Arclith
 from infrastructure.logging_setup import setup_logging
 

@@ -1,7 +1,7 @@
+from application.use_cases import FindByNameUseCase
 from arclith import BaseService, Logger
 from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
-from application.use_cases import FindByNameUseCase
+from domain.ports.output.ingredient_repository import IngredientRepository
 
 
 class IngredientService(BaseService[Ingredient]):

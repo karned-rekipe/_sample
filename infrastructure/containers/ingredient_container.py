@@ -2,7 +2,7 @@ from application.services.ingredient_service import IngredientService
 from arclith import Arclith
 from arclith.adapters.output.mongodb.config import MongoDBConfig
 from arclith.domain.ports.logger import Logger
-from domain.ports.ingredient_repository import IngredientRepository
+from domain.ports.output.ingredient_repository import IngredientRepository
 
 
 def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logger]:
@@ -16,7 +16,7 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logge
             if mongo is None:
                 raise RuntimeError("MongoDB settings are required when repository=mongodb")
             repo = MongoDBIngredientRepository(
-                MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name),
+                MongoDBConfig(uri = mongo.uri, db_name = mongo.db_name),
                 arclith.logger,
             )
         case "duckdb":
@@ -29,4 +29,3 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, Logge
             from adapters.output.memory.repository import InMemoryIngredientRepository
             repo = InMemoryIngredientRepository()
     return IngredientService(repo, arclith.logger, config.soft_delete.retention_days), arclith.logger
-

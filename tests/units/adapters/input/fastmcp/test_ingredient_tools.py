@@ -1,8 +1,7 @@
-import json
-from unittest.mock import AsyncMock, patch
-
 import fastmcp
+import json
 import pytest
+from unittest.mock import AsyncMock, patch
 
 from adapters.input.fastmcp.tools import AdminMCP, IngredientMCP
 from application.services.ingredient_service import IngredientService

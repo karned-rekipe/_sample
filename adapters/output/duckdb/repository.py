@@ -1,4 +1,4 @@
-from adapters.output.duckdb.ingredient_repository import DuckDBIngredientRepository
+from adapters.output.duckdb.repositories.ingredient_repository import DuckDBIngredientRepository
 
 __all__ = [
     "DuckDBIngredientRepository"

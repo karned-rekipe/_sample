@@ -1,10 +1,9 @@
 """MCP tools registration."""
 
 import fastmcp
-
-from arclith import Arclith
 from adapters.input.fastmcp.tools import AdminMCP, IngredientMCP
-from infrastructure.ingredient_container import build_ingredient_service
+from arclith import Arclith
+from infrastructure.containers.ingredient_container import build_ingredient_service
 from infrastructure.purge_registry import purge_registry
 
 

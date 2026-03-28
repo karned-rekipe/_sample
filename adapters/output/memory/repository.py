@@ -1,4 +1,4 @@
-from adapters.output.memory.ingredient_repository import InMemoryIngredientRepository
+from adapters.output.memory.repositories.ingredient_repository import InMemoryIngredientRepository
 
 __all__ = [
     "InMemoryIngredientRepository"
