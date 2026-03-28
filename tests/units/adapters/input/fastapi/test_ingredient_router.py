@@ -2,9 +2,10 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient, ASGITransport
 
-from adapters.input.fastapi.dependencies import inject_tenant_uri
-from adapters.input.fastapi.routers import IngredientRouter
+from adapters.input.fastapi.dependencies import inject_tenant_uri, require_auth
+from adapters.input.fastapi.routers import AdminRouter, IngredientRouter
 from application.services.ingredient_service import IngredientService
+from infrastructure.purge_registry import PurgeRegistry
 
 
 def _payload(**kwargs) -> dict:
@@ -19,9 +20,12 @@ def service(repo, logger):
 @pytest.fixture
 def app(service, logger):
     fastapi_app = FastAPI()
-    router = IngredientRouter(service, logger)
-    fastapi_app.include_router(router.router)
+    registry = PurgeRegistry()
+    registry.register("ingredients", service.purge)
+    fastapi_app.include_router(IngredientRouter(service, logger).router)
+    fastapi_app.include_router(AdminRouter(registry).router)
     fastapi_app.dependency_overrides[inject_tenant_uri] = lambda: None
+    fastapi_app.dependency_overrides[require_auth] = lambda: {"sub": "test-user"}
     return fastapi_app
 
 
@@ -181,19 +185,21 @@ async def test_duplicate_has_different_uuid(client, created):
     assert data["data"]["uuid"] != uuid
 
 
-# --- DELETE /purge ---
+# --- DELETE /admin/purge ---
 
 async def test_purge_returns_200(client):
-    response = await client.delete("/v1/ingredients/purge")
+    response = await client.delete("/admin/purge")
     assert response.status_code == 200
 
 
 async def test_purge_returns_count(client):
-    response = await client.delete("/v1/ingredients/purge")
-    assert "purged" in response.json()
+    response = await client.delete("/admin/purge")
+    data = response.json()
+    assert "purged" in data
+    assert "total" in data
 
 
 async def test_purge_count_is_zero_when_nothing_eligible(client):
-    await client.post("/v1/ingredients/", json = _payload())
-    response = await client.delete("/v1/ingredients/purge")
-    assert response.json()["purged"] == 0
+    await client.post("/v1/ingredients/", json=_payload())
+    response = await client.delete("/admin/purge")
+    assert response.json()["total"] == 0

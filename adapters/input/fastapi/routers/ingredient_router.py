@@ -51,8 +51,8 @@ class IngredientRouter:
         )
         self.router.add_api_route(
             methods=["GET"],
-            path="/",
-            endpoint=self.list_ingredients,
+            path="/{uuid}",
+            endpoint=self.get_ingredient,
             summary="Get ingredient",
             response_model=ApiResponse[IngredientSchema],
             status_code=200,
