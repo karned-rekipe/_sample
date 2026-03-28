@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 import fastmcp
 import pytest
 
-from adapters.input.fastmcp.tools import IngredientMCP
+from adapters.input.fastmcp.tools import AdminMCP, IngredientMCP
 from application.services.ingredient_service import IngredientService
 
 
@@ -20,10 +20,16 @@ def service(repo, logger):
 
 @pytest.fixture
 async def client(service, logger, mcp_app):
-    with patch("adapters.input.fastmcp.tools.ingredient_tools.inject_tenant_uri", new = AsyncMock()):
-        IngredientMCP(service, logger, mcp_app)
-        async with fastmcp.Client(mcp_app) as c:
-            yield c
+    with patch("adapters.input.fastmcp.tools.ingredient_tools.inject_tenant_uri", new=AsyncMock()):
+        with patch("adapters.input.fastmcp.tools.ingredient_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
+            with patch("adapters.input.fastmcp.tools.admin_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
+                from infrastructure.purge_registry import PurgeRegistry
+                registry = PurgeRegistry()
+                registry.register("ingredients", service.purge)
+                IngredientMCP(service, logger, mcp_app)
+                AdminMCP(registry, logger, mcp_app)
+                async with fastmcp.Client(mcp_app) as c:
+                    yield c
 
 
 def _data(result) -> dict | list | None:
@@ -105,8 +111,10 @@ async def test_duplicate_returns_new_uuid(client, created_uuid):
     assert _data(result)["uuid"] != created_uuid
 
 
-# --- purge_ingredients ---
+# --- purge_all ---
 
 async def test_purge_returns_count(client):
-    result = await client.call_tool("purge_ingredients", {})
-    assert "purged" in _data(result)
+    result = await client.call_tool("purge_all", {})
+    data = _data(result)
+    assert "purged" in data
+    assert "total" in data

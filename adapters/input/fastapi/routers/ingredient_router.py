@@ -4,7 +4,7 @@ from uuid import UUID as StdUUID
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from uuid6 import UUID
 
-from adapters.input.fastapi.dependencies import inject_tenant_uri
+from adapters.input.fastapi.dependencies import inject_tenant_uri, require_auth
 from adapters.input.schemas.ingredient_schema import (
     IngredientCreateSchema,
     IngredientPatchSchema,
@@ -39,6 +39,7 @@ class IngredientRouter:
             summary="Create ingredient",
             response_model=ApiResponse[IngredientSchema],
             status_code=201,
+            dependencies=[Depends(require_auth)],
         )
         self.router.add_api_route(
             methods=["GET"],
@@ -46,13 +47,6 @@ class IngredientRouter:
             endpoint=self.list_ingredients,
             summary="List ingredients",
             response_model=PaginatedResponse[IngredientSchema],
-            status_code=200,
-        )
-        self.router.add_api_route(
-            methods=["DELETE"],
-            path="/purge",
-            endpoint=self.purge_ingredients,
-            summary="Purge soft-deleted ingredients",
             status_code=200,
         )
         self.router.add_api_route(
@@ -87,6 +81,7 @@ class IngredientRouter:
             summary="Delete ingredient",
             status_code=204,
             responses={404: {"description": "Ingredient not found"}},
+            dependencies=[Depends(require_auth)],
         )
         self.router.add_api_route(
             methods=["POST"],
@@ -166,7 +161,7 @@ class IngredientRouter:
 
         The ingredient is marked as deleted and excluded from list results.
         It is retained until the purge retention period expires.
-        Use `DELETE /v1/ingredients/purge` to permanently remove expired entries.
+        Use `DELETE /admin/purge` to permanently remove all expired entities.
         """
         await self._service.delete(self._to_uuid6(uuid))
 
@@ -211,12 +206,4 @@ class IngredientRouter:
             metadata=ResponseMetadata(duration_ms=int(duration_ms)),
         )
 
-    async def purge_ingredients(self) -> dict:
-        """Permanently delete soft-deleted ingredients that have exceeded the retention period.
-
-        Returns {"purged": <count>} with the number of permanently deleted records.
-        This operation is irreversible.
-        """
-        purged = await self._service.purge()
-        return {"purged": purged}
 
