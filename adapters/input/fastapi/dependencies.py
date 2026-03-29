@@ -8,15 +8,15 @@ from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from arclith.adapters.input.fastapi.dependencies import make_inject_tenant_uri
-from arclith.infrastructure.config import load_config
+from arclith.infrastructure.config import load_config_dir
 
-_CONFIG_PATH = Path(__file__).parent.parent.parent.parent / "config.yaml"
+_CONFIG_PATH = Path(__file__).parent.parent.parent.parent / "config"
 _http_bearer = HTTPBearer(auto_error=False)
 
 
 @cache
 def _get_inject_fn() -> Callable:
-    return make_inject_tenant_uri(load_config(_CONFIG_PATH))
+    return make_inject_tenant_uri(load_config_dir(_CONFIG_PATH))
 
 
 async def inject_tenant_uri(request: Request) -> None:
@@ -30,7 +30,7 @@ def _get_require_auth_fn() -> Callable:
     from arclith.adapters.input.license.validator import RoleLicenseValidator
     from arclith.adapters.output.memory.cache_adapter import MemoryCacheAdapter
 
-    config = load_config(_CONFIG_PATH)
+    config = load_config_dir(_CONFIG_PATH)
     kc = config.keycloak
     if kc is None:
         raise RuntimeError("config.keycloak requis pour require_auth — ajouter la section dans config.yaml")
@@ -48,4 +48,3 @@ async def require_auth(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_http_bearer)],
 ) -> dict:
     return await _get_require_auth_fn()(credentials)
-

@@ -7,14 +7,14 @@ from typing import Callable
 import fastmcp
 
 from arclith.adapters.input.fastmcp.dependencies import make_inject_tenant_uri
-from arclith.infrastructure.config import load_config
+from arclith.infrastructure.config import load_config_dir
 
-_CONFIG_PATH = Path(__file__).parent.parent.parent.parent / "config.yaml"
+_CONFIG_PATH = Path(__file__).parent.parent.parent.parent / "config"
 
 
 @cache
 def _get_inject_fn() -> Callable:
-    return make_inject_tenant_uri(load_config(_CONFIG_PATH))
+    return make_inject_tenant_uri(load_config_dir(_CONFIG_PATH))
 
 
 async def inject_tenant_uri(ctx: fastmcp.Context | None) -> None:
@@ -29,7 +29,7 @@ def _get_require_auth_mcp_fn() -> Callable:
     from arclith.adapters.input.license.validator import RoleLicenseValidator
     from arclith.adapters.output.memory.cache_adapter import MemoryCacheAdapter
 
-    config = load_config(_CONFIG_PATH)
+    config = load_config_dir(_CONFIG_PATH)
     kc = config.keycloak
     if kc is None:
         raise RuntimeError("config.keycloak requis pour require_auth_mcp — ajouter la section dans config.yaml")
@@ -47,5 +47,3 @@ async def require_auth_mcp(ctx: fastmcp.Context | None) -> dict:
     if ctx is None:
         raise PermissionError("401: Authentification requise (transport stdio non supporté)")
     return await _get_require_auth_mcp_fn()(ctx)
-
-

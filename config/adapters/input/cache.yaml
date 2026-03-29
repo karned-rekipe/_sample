@@ -1,0 +1,5 @@
+backend: memory      # memory (par process) | redis (partagé multi-workers)
+redis_url: redis://127.0.0.1:6379
+jwks_ttl: 3600       # secondes — durée de cache des clés publiques Keycloak
+tenant_uri_ttl: 300  # secondes — durée de cache de l'URI MongoDB par tenant
+

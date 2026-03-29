@@ -13,7 +13,6 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
-  UV_NO_SOURCES: "1"
 
 jobs:
   lint:
@@ -21,10 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make lint
 
   security:
@@ -32,10 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make security
 
   complexity:
@@ -43,10 +46,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make complexity
 
   typecheck:
@@ -55,10 +60,12 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make typecheck
 
   coverage:
@@ -66,10 +73,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make coverage
 
   report:
