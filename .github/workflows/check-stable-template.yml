@@ -34,12 +34,13 @@ jobs:
           echo "✅ pyproject.toml pointe vers PyPI stable"
           grep "arclith" pyproject.toml
 
-      - name: Verify arclith version is >= 0.7.0
+      - name: Verify arclith version is >= 0.7.1
         run: |
-          if ! grep -qE 'arclith\[.*\]>=0\.[7-9]\.|arclith\[.*\]>=0\.[1-9][0-9]|arclith\[.*\]>=[1-9]' pyproject.toml; then
-            echo "⚠️  ATTENTION: arclith version < 0.7.0 détectée"
-            echo "Le template doit utiliser arclith>=0.7.0 pour load_config_dir()"
+          if ! grep -qE 'arclith\[.*\]>=0\.7\.[1-9]|arclith\[.*\]>=0\.[8-9]\.|arclith\[.*\]>=0\.[1-9][0-9]|arclith\[.*\]>=[1-9]' pyproject.toml; then
+            echo "⚠️  ATTENTION: arclith version < 0.7.1 détectée"
+            echo "Le template doit utiliser arclith>=0.7.1 pour load_config_dir() export"
             exit 1
           fi
-          echo "✅ arclith version >= 0.7.0"
+          echo "✅ arclith version >= 0.7.1"
+
 
