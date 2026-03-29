@@ -13,7 +13,6 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
-  UV_NO_SOURCES: "1"
 
 jobs:
   lint:
@@ -21,33 +20,57 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: _sample
+      - uses: actions/checkout@v4
+        with:
+          repository: karned-rekipe/framework
+          ref: feat/config-dir-adapter-registry-export-cli
+          path: framework
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
       - run: make lint
+        working-directory: _sample
 
   security:
     name: Security
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: _sample
+      - uses: actions/checkout@v4
+        with:
+          repository: karned-rekipe/framework
+          ref: feat/config-dir-adapter-registry-export-cli
+          path: framework
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
       - run: make security
+        working-directory: _sample
 
   complexity:
     name: Complexity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: _sample
+      - uses: actions/checkout@v4
+        with:
+          repository: karned-rekipe/framework
+          ref: feat/config-dir-adapter-registry-export-cli
+          path: framework
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
       - run: make complexity
+        working-directory: _sample
 
   typecheck:
     name: Type checking
@@ -55,22 +78,38 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: _sample
+      - uses: actions/checkout@v4
+        with:
+          repository: karned-rekipe/framework
+          ref: feat/config-dir-adapter-registry-export-cli
+          path: framework
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
       - run: make typecheck
+        working-directory: _sample
 
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: _sample
+      - uses: actions/checkout@v4
+        with:
+          repository: karned-rekipe/framework
+          ref: feat/config-dir-adapter-registry-export-cli
+          path: framework
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
       - run: make coverage
+        working-directory: _sample
 
   report:
     name: Report
