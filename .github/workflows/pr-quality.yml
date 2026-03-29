@@ -38,6 +38,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make security
 
   complexity:
@@ -50,6 +51,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make complexity
 
   typecheck:
@@ -63,6 +65,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make typecheck
 
   coverage:
