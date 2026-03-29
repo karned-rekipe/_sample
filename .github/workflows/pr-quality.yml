@@ -25,6 +25,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make lint
 
   security:
@@ -74,6 +75,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - run: uv lock
       - run: make coverage
 
   report:
