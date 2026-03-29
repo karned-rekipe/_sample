@@ -20,12 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: karned-rekipe/framework
-          ref: feat/config-dir-adapter-registry-export-cli
-          path: framework
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -37,12 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: karned-rekipe/framework
-          ref: feat/config-dir-adapter-registry-export-cli
-          path: framework
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -54,12 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: karned-rekipe/framework
-          ref: feat/config-dir-adapter-registry-export-cli
-          path: framework
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -72,12 +57,7 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: karned-rekipe/framework
-          ref: feat/config-dir-adapter-registry-export-cli
-          path: framework
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -89,12 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: karned-rekipe/framework
-          ref: feat/config-dir-adapter-registry-export-cli
-          path: framework
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bash .github/scripts/patch-framework-source.sh
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
