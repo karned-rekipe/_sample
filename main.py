@@ -37,7 +37,7 @@ from arclith import Arclith
 from infrastructure.logging_setup import setup_logging
 
 _logger = setup_logging()
-_CONFIG = Path(__file__).parent / "config.yaml"
+_CONFIG = Path(__file__).parent / "config"
 _VALID_MODES = {"api", "mcp_http", "mcp_sse", "mcp_stdio", "all"}
 
 MODE = os.getenv("MODE", "api")

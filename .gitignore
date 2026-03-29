@@ -8,6 +8,10 @@ dist/
 *.egg-info/
 .hatch/
 *.dist-info/
+
+# generated artifact — source of truth is config/
+config.yaml
+
 .chainlit/translations/
 
 # secrets — ne jamais committer
@@ -25,4 +29,3 @@ data/
 
 # macOS
 .DS_Store
-

@@ -1,0 +1,5 @@
+vault_addr: http://127.0.0.1:5991
+vault_mount: kv
+vault_path_prefix: rekipe/tenants   # secret path : rekipe/tenants/{tenant_id}
+tenant_claim: sub                   # claim JWT portant le tenant_id
+

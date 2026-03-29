@@ -1,0 +1,4 @@
+name: Rekipe Sample API
+version: "0.1.0"
+description: "Sandbox R&D pour tester le framework arclith - CRUD Ingredient minimal (ne jamais déployer en production)"
+
