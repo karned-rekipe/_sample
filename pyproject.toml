@@ -8,12 +8,10 @@ version = "0.1.0"
 description = "Sample CRUD — built on arclith"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "arclith[mongodb,fastapi,mcp,duckdb]>=0.3.0",
+    "arclith[mongodb,fastapi,mcp,duckdb]>=0.7.0",
     "hvac>=2.3.0",
 ]
 
-[tool.uv.sources]
-arclith = { path = "../framework", editable = true }
 
 [tool.mypy]
 explicit_package_bases = true

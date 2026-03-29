@@ -1,0 +1,45 @@
+name: Template Stability Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'pyproject.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-stable-deps:
+    name: Verify stable PyPI dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for [tool.uv.sources] in pyproject.toml
+        run: |
+          if grep -q '\[tool\.uv\.sources\]' pyproject.toml; then
+            echo "❌ ERREUR: [tool.uv.sources] détecté dans pyproject.toml"
+            echo ""
+            echo "Le template _sample DOIT pointer vers PyPI stable pour arclith-cli."
+            echo ""
+            echo "Pour développer localement avec framework editable:"
+            echo "  1. Checkout une branche locale (pas main)"
+            echo "  2. Lire .agents/skills/dev-mode-editable/SKILL.md"
+            echo "  3. Ajouter temporairement [tool.uv.sources]"
+            echo "  4. NE JAMAIS merger vers main avec [tool.uv.sources]"
+            echo ""
+            exit 1
+          fi
+          echo "✅ pyproject.toml pointe vers PyPI stable"
+          grep "arclith" pyproject.toml
+
+      - name: Verify arclith version is >= 0.7.0
+        run: |
+          if ! grep -qE 'arclith\[.*\]>=0\.[7-9]\.|arclith\[.*\]>=0\.[1-9][0-9]|arclith\[.*\]>=[1-9]' pyproject.toml; then
+            echo "⚠️  ATTENTION: arclith version < 0.7.0 détectée"
+            echo "Le template doit utiliser arclith>=0.7.0 pour load_config_dir()"
+            exit 1
+          fi
+          echo "✅ arclith version >= 0.7.0"
+
