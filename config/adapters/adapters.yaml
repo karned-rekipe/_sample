@@ -1,3 +1,34 @@
-logger: console
-repository: mongodb  # choix : memory  mongodb  duckdb
+# ────────────────────────────────────────────────────────────────────────────────
+# Configuration des adapters
+# ────────────────────────────────────────────────────────────────────────────────
 
+logger: console
+
+# ── Repository adapter ──────────────────────────────────────────────────────────
+# Définit la stratégie de persistance des données.
+# Par défaut : 'memory' (idéal pour dev/tests, aucune dépendance externe requise)
+#
+# Options disponibles :
+#
+#   memory   → Stockage en mémoire (données perdues au redémarrage)
+#              ✓ Zéro configuration
+#              ✓ Tests rapides
+#              ✗ Pas de persistance
+#
+#   mongodb  → Base de données MongoDB (production-ready)
+#              ✓ Scalable, multitenant
+#              ✓ Transactions ACID
+#              → Nécessite : MongoDB server + config dans output/mongodb.yaml
+#              → URI dans secrets.yaml ou Vault
+#
+#   duckdb   → Base de données fichier locale (SQL analytique)
+#              ✓ SQL puissant, sans serveur
+#              ✓ Import CSV/Parquet/JSON natif
+#              → Nécessite : config dans output/duckdb.yaml
+#
+# Pour passer en production :
+#   1. Changer 'memory' → 'mongodb' ou 'duckdb'
+#   2. Configurer output/mongodb.yaml ou output/duckdb.yaml
+#   3. Ajouter les secrets (URI MongoDB) dans secrets.yaml ou Vault
+#
+repository: memory
