@@ -12,8 +12,6 @@ dependencies = [
     "hvac>=2.3.0",
 ]
 
-[tool.uv.sources]
-arclith = { path = "../framework", editable = true }
 
 [tool.mypy]
 explicit_package_bases = true
