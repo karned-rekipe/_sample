@@ -5,7 +5,6 @@ from domain.models.ingredient import Ingredient
 def test_valid_ingredient():
     i = Ingredient(name="Farine")
     assert i.name == "Farine"
-    assert i.unit is None
 
 
 def test_name_stripped():
@@ -22,20 +21,6 @@ def test_blank_name_raises():
     with pytest.raises(Exception):
         Ingredient(name="   ")
 
-
-def test_unit_stripped():
-    i = Ingredient(name="Farine", unit="  kg  ")
-    assert i.unit == "kg"
-
-
-def test_unit_none_allowed():
-    i = Ingredient(name="Farine", unit=None)
-    assert i.unit is None
-
-
-def test_blank_unit_raises():
-    with pytest.raises(Exception):
-        Ingredient(name="Farine", unit="   ")
 
 
 def test_inherits_entity_fields():

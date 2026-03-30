@@ -32,20 +32,17 @@ class IngredientMCP:
                 name: Annotated[str, Field(
                     description = "Nom de l'ingrédient (ex. 'Farine de blé', 'Sel fin'). Sera normalisé (espaces rognés).",
                     examples = ["Farine de blé", "Sel fin"])],
-                unit: Annotated[str | None, Field(default = None,
-                                                  description = "Unité de mesure associée (ex. 'g', 'kg', 'ml', 'cl'). Omettre si non applicable.",
-                                                  examples = ["g", "kg", "ml", None])] = None,
                 ctx: fastmcp.Context | None = None,
         ) -> dict:
             """Create a new reusable ingredient.
 
             Returns the created ingredient with its generated UUID.
             Once created, use `link_ingredient_to_recipe` to attach it to a recipe.
-            Fields returned: uuid, name, unit, created_at, updated_at, version.
+            Fields returned: uuid, name, created_at, updated_at, version.
             """
             await require_auth_mcp(ctx)
             await inject_tenant_uri(ctx)
-            result = await service.create(Ingredient(name = name, unit = unit))
+            result = await service.create(Ingredient(name = name))
             logger.info("✅ Ingredient created via MCP", uuid = str(result.uuid), name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
@@ -58,7 +55,7 @@ class IngredientMCP:
             """Get an ingredient by its UUID.
 
             Returns the full ingredient object or null if not found.
-            Fields: uuid, name, unit, created_at, updated_at, version.
+            Fields: uuid, name, created_at, updated_at, version.
             """
             await inject_tenant_uri(ctx)
             result = await service.read(to_uuid6(StdUUID(uuid)))
@@ -74,19 +71,16 @@ class IngredientMCP:
                                            examples = ["01951234-5678-7abc-def0-123456789abc"])],
                 name: Annotated[str, Field(description = "Nouveau nom de l'ingrédient.",
                                            examples = ["Farine complète", "Gros sel"])],
-                unit: Annotated[str | None, Field(default = None,
-                                                  description = "Nouvelle unité de mesure. Passer null pour la supprimer.",
-                                                  examples = ["g", None])] = None,
                 ctx: fastmcp.Context | None = None,
         ) -> dict:
-            """Replace name and unit of an existing ingredient.
+            """Replace name of an existing ingredient.
 
-            Full replacement (PUT semantics): both name and unit are overwritten.
+            Full replacement (PUT semantics): name is overwritten.
             Returns the updated ingredient.
             Note: updating an ingredient does not propagate to recipes where it is already linked (snapshot model).
             """
             await inject_tenant_uri(ctx)
-            result = await service.update(Ingredient(uuid = to_uuid6(StdUUID(uuid)), name = name, unit = unit))
+            result = await service.update(Ingredient(uuid = to_uuid6(StdUUID(uuid)), name = name))
             logger.info("✅ Ingredient updated via MCP", uuid = uuid, name = result.name)
             return IngredientSchema.model_validate(result).model_dump()
 
@@ -117,7 +111,7 @@ class IngredientMCP:
             """List all active (non-deleted) ingredients.
 
             Pass `name` for a partial, case-insensitive name filter.
-            Each item: uuid, name, unit, created_at, updated_at, version.
+            Each item: uuid, name, created_at, updated_at, version.
             Use these UUIDs with `link_ingredient_to_recipe` to attach ingredients to a recipe.
             """
             await inject_tenant_uri(ctx)
@@ -133,7 +127,7 @@ class IngredientMCP:
         ) -> dict:
             """Duplicate an ingredient, assigning it a new UUID.
 
-            Creates an independent copy with the same name and unit.
+            Creates an independent copy with the same name.
             Returns the new ingredient with its own UUID.
             """
             await inject_tenant_uri(ctx)

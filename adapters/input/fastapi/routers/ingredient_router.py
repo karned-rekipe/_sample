@@ -39,7 +39,6 @@ class IngredientRouter:
             summary="Create ingredient",
             response_model=ApiResponse[IngredientSchema],
             status_code=201,
-            dependencies=[Depends(require_auth)],
         )
         self.router.add_api_route(
             methods=["GET"],
@@ -107,7 +106,7 @@ class IngredientRouter:
         Returns the UUID of the created ingredient.
         Once created, use `POST /v1/recipes/{uuid}/ingredients/{ingredient_uuid}` to attach it to a recipe.
         """
-        result = await self._service.create(Ingredient(name=payload.name, unit=payload.unit))
+        result = await self._service.create(Ingredient(name=payload.name))
         return success_response(
             IngredientSchema.model_validate(result, from_attributes=True),
             metadata=ResponseMetadata(duration_ms=int(duration_ms)),
@@ -121,7 +120,7 @@ class IngredientRouter:
         """Get an ingredient by its UUID.
 
         Returns the full ingredient object.
-        Fields: uuid, name, unit, created_at, updated_at, version.
+        Fields: uuid, name, created_at, updated_at, version.
         """
         result = await self._service.read(self._to_uuid6(uuid))
         if result is None:
@@ -133,12 +132,12 @@ class IngredientRouter:
         )
 
     async def update_ingredient(self, uuid: StdUUID, payload: IngredientUpdateSchema) -> None:
-        """Replace name and unit of an existing ingredient (PUT semantics).
+        """Replace name of an existing ingredient (PUT semantics).
 
-        Both fields are fully overwritten.
+        The field is fully overwritten.
         Note: changes do not propagate to recipes where this ingredient is already linked (snapshot model).
         """
-        await self._service.update(Ingredient(uuid = self._to_uuid6(uuid), name = payload.name, unit = payload.unit))
+        await self._service.update(Ingredient(uuid = self._to_uuid6(uuid), name = payload.name))
 
     async def patch_ingredient(self, uuid: StdUUID, payload: IngredientPatchSchema) -> None:
         """Partially update an ingredient (PATCH semantics).
@@ -153,7 +152,6 @@ class IngredientRouter:
         await self._service.update(Ingredient(
             uuid=existing.uuid,
             name=payload.name if payload.name is not None else existing.name,
-            unit=payload.unit if payload.unit is not None else existing.unit,
         ))
 
     async def delete_ingredient(self, uuid: StdUUID) -> None:

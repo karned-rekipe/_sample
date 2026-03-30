@@ -39,7 +39,7 @@ def _data(result) -> dict | list | None:
 
 @pytest.fixture
 async def created_uuid(client) -> str:
-    result = await client.call_tool("create_ingredient", {"name": "Farine", "unit": "kg"})
+    result = await client.call_tool("create_ingredient", {"name": "Farine"})
     data = _data(result)
     assert isinstance(data, dict)
     return data["uuid"]
@@ -51,10 +51,6 @@ async def test_create_returns_uuid(client):
     result = await client.call_tool("create_ingredient", {"name": "Farine"})
     assert "uuid" in _data(result)
 
-
-async def test_create_with_unit(client):
-    result = await client.call_tool("create_ingredient", {"name": "Sel", "unit": "g"})
-    assert _data(result)["unit"] == "g"
 
 
 # --- get_ingredient ---

@@ -9,7 +9,7 @@ from infrastructure.purge_registry import PurgeRegistry
 
 
 def _payload(**kwargs) -> dict:
-    return {"name": "Farine", "unit": "kg", **kwargs}
+    return {"name": "Farine", **kwargs}
 
 
 @pytest.fixture
@@ -64,7 +64,6 @@ async def test_get_found(client, created):
     data = response.json()
     assert data["status"] == "success"
     assert data["data"]["name"] == "Farine"
-    assert data["data"]["unit"] == "kg"
 
 
 async def test_get_not_found(client):
@@ -76,13 +75,13 @@ async def test_get_not_found(client):
 
 async def test_update_returns_204(client, created):
     uuid = created["uuid"]
-    response = await client.put(f"/v1/ingredients/{uuid}", json = _payload(name = "Farine complète", unit = "g"))
+    response = await client.put(f"/v1/ingredients/{uuid}", json = _payload(name = "Farine complète"))
     assert response.status_code == 204
 
 
 async def test_update_reflects_on_get(client, created):
     uuid = created["uuid"]
-    await client.put(f"/v1/ingredients/{uuid}", json=_payload(name="Farine complète", unit="g"))
+    await client.put(f"/v1/ingredients/{uuid}", json=_payload(name="Farine complète"))
     response = await client.get(f"/v1/ingredients/{uuid}")
     assert response.json()["data"]["name"] == "Farine complète"
 
@@ -101,7 +100,6 @@ async def test_patch_preserves_unset_fields(client, created):
     response = await client.get(f"/v1/ingredients/{uuid}")
     data = response.json()["data"]
     assert data["name"] == "Farine T80"
-    assert data["unit"] == "kg"
 
 
 async def test_patch_not_found_returns_404(client):

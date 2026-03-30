@@ -13,6 +13,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - All adapter options (memory/mongodb/duckdb) are now documented inline in `config/adapters/adapters.yaml`
   - Migration guide included in configuration comments for production deployments
 
+### Removed
+
+- **BREAKING**: Removed `unit` field from `Ingredient` entity to make template more generic
+  - Simplifies the template structure for easier scaffolding
+  - Reduces domain-specific logic in the reference implementation
+  - Projects can add their own domain-specific fields as needed
+
 ### Added
 
 - Comprehensive inline documentation in `config/adapters/adapters.yaml`

@@ -15,12 +15,6 @@ from domain.models.ingredient import Ingredient
 def test_create_schema_valid():
     s = IngredientCreateSchema(name="Farine")
     assert s.name == "Farine"
-    assert s.unit is None
-
-
-def test_create_schema_with_unit():
-    s = IngredientCreateSchema(name="Farine", unit="kg")
-    assert s.unit == "kg"
 
 
 def test_create_schema_empty_name_raises():
@@ -28,17 +22,11 @@ def test_create_schema_empty_name_raises():
         IngredientCreateSchema(name="")
 
 
-def test_create_schema_empty_unit_raises():
-    with pytest.raises(Exception):
-        IngredientCreateSchema(name="Farine", unit="")
-
-
 # --- IngredientPatchSchema ---
 
 def test_patch_schema_all_none():
     s = IngredientPatchSchema()
     assert s.name is None
-    assert s.unit is None
 
 
 def test_patch_schema_partial():
@@ -66,10 +54,9 @@ def test_update_schema_empty_name_raises():
 # --- IngredientSchema (response) ---
 
 def test_ingredient_schema_from_entity():
-    entity = Ingredient(name="Farine", unit="kg")
+    entity = Ingredient(name="Farine")
     schema = IngredientSchema.model_validate(entity)
     assert schema.name == "Farine"
-    assert schema.unit == "kg"
     assert schema.is_deleted is False
     assert schema.version == 1
 
