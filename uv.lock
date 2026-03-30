@@ -46,8 +46,8 @@ wheels = [
 
 [[package]]
 name = "arclith"
-version = "0.7.1"
-source = { editable = "../framework" }
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi" },
     { name = "fastmcp" },
@@ -55,6 +55,10 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "uuid6" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/f9/1cce682de4161a4aac10c4eec4f9ba0375b7bf5df0a5c8a17db51863d4e2/arclith-0.8.0.tar.gz", hash = "sha256:1e168dcbacf0076236867e7d50b924857e761f821a181408b0e0ef5f8bf52f67", size = 228804, upload-time = "2026-03-30T21:07:22.095Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/43/86cc4b0849d519ecfa99e70088a8e05e8cb6d28a50272c2598f7ec45c88d/arclith-0.8.0-py3-none-any.whl", hash = "sha256:727a414540c71216a996d28c176f220031cd54838c330a60046427cab6868824", size = 73766, upload-time = "2026-03-30T21:07:20.667Z" },
 ]
 
 [package.optional-dependencies]
@@ -71,49 +75,6 @@ mcp = [
 ]
 mongodb = [
     { name = "motor" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "duckdb", marker = "extra == 'all'", specifier = "==1.5.0" },
-    { name = "duckdb", marker = "extra == 'duckdb'", specifier = "==1.5.0" },
-    { name = "fastapi", specifier = ">=0.135.1" },
-    { name = "fastapi", marker = "extra == 'all'", specifier = "==0.135.1" },
-    { name = "fastapi", marker = "extra == 'fastapi'", specifier = "==0.135.1" },
-    { name = "fastmcp", specifier = ">=3.1.0" },
-    { name = "fastmcp", marker = "extra == 'all'", specifier = "==3.1.0" },
-    { name = "fastmcp", marker = "extra == 'mcp'", specifier = "==3.1.0" },
-    { name = "httpx", marker = "extra == 'all'", specifier = ">=0.27.0" },
-    { name = "httpx", marker = "extra == 'auth'", specifier = ">=0.27.0" },
-    { name = "hvac", marker = "extra == 'all'", specifier = "==2.3.0" },
-    { name = "hvac", marker = "extra == 'vault'", specifier = "==2.3.0" },
-    { name = "loguru", specifier = "==0.7.3" },
-    { name = "motor", marker = "extra == 'all'", specifier = "==3.7.1" },
-    { name = "motor", marker = "extra == 'mongodb'", specifier = "==3.7.1" },
-    { name = "pydantic", specifier = "==2.12.5" },
-    { name = "pyjwt", extras = ["cryptography"], marker = "extra == 'all'", specifier = ">=2.8.0" },
-    { name = "pyjwt", extras = ["cryptography"], marker = "extra == 'auth'", specifier = ">=2.8.0" },
-    { name = "pytz", marker = "extra == 'all'", specifier = "==2024.1" },
-    { name = "pytz", marker = "extra == 'duckdb'", specifier = "==2024.1" },
-    { name = "pyyaml", specifier = "==6.0.3" },
-    { name = "redis", marker = "extra == 'all'", specifier = ">=5.0.0" },
-    { name = "redis", marker = "extra == 'cache'", specifier = ">=5.0.0" },
-    { name = "uuid6", specifier = "==2025.0.1" },
-    { name = "uvicorn", marker = "extra == 'all'", specifier = "==0.41.0" },
-    { name = "uvicorn", marker = "extra == 'fastapi'", specifier = "==0.41.0" },
-]
-provides-extras = ["mongodb", "duckdb", "fastapi", "mcp", "vault", "cache", "auth", "all"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "bandit", extras = ["toml"], specifier = "==1.9.4" },
-    { name = "mypy", specifier = "==1.19.1" },
-    { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest-asyncio", specifier = ">=1.3.0" },
-    { name = "pytest-cov", specifier = "==7.0.0" },
-    { name = "radon", specifier = "==6.0.1" },
-    { name = "ruff", specifier = "==0.15.6" },
-    { name = "types-pyyaml", specifier = "==6.0.12.20250516" },
 ]
 
 [[package]]
@@ -1176,7 +1137,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "arclith", extras = ["mongodb", "fastapi", "mcp", "duckdb"], editable = "../framework" },
+    { name = "arclith", extras = ["mongodb", "fastapi", "mcp", "duckdb"], specifier = ">=0.8.0" },
     { name = "hvac", specifier = ">=2.3.0" },
 ]
 
