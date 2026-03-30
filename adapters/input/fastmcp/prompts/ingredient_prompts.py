@@ -36,7 +36,7 @@ class IngredientPrompts:
             """Explore and discover available ingredients.
 
             Loads the current catalog and guides the LLM to help the user
-            search by name, filter by unit, or identify what is available.
+            search by name or identify what is available.
             """
             await inject_tenant_uri(ctx)
             items = await service.find_all()
@@ -48,7 +48,7 @@ class IngredientPrompts:
                 snapshot = f"{total} ingredient(s) available: {names}{'...' if total > _EXPLORE_PREVIEW_LIMIT else '.'}"
             return (
                 f"{snapshot}\n\n"
-                "Help me explore these ingredients: search by name, filter by unit, "
+                "Help me explore these ingredients: search by name, "
                 "or suggest which ones to use for a given dish."
             )
 
@@ -62,9 +62,9 @@ class IngredientPrompts:
             return (
                 "Here are all the capabilities exposed by this MCP server:\n\n"
                 "**Tools** (actions):\n"
-                "- create_ingredient(name, unit?) — create a new ingredient\n"
+                "- create_ingredient(name) — create a new ingredient\n"
                 "- get_ingredient(uuid) — retrieve by UUID\n"
-                "- update_ingredient(uuid, name, unit?) — full replacement (PUT semantics)\n"
+                "- update_ingredient(uuid, name) — full replacement (PUT semantics)\n"
                 "- delete_ingredient(uuid) — soft-delete\n"
                 "- list_ingredients(name?) — list all active, optional partial name filter\n"
                 "- duplicate_ingredient(uuid) — clone with a new UUID\n"

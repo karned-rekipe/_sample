@@ -46,7 +46,7 @@ wheels = [
 
 [[package]]
 name = "arclith"
-version = "0.6.1"
+version = "0.7.1"
 source = { editable = "../framework" }
 dependencies = [
     { name = "fastapi" },

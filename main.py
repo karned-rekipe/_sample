@@ -3,19 +3,23 @@
     MODE=api          FastAPI REST  :8000  (default)
     MODE=mcp_http     MCP streamable-HTTP  :8001
     MODE=mcp_sse      MCP SSE              :8001
-    MODE=mcp_stdio    MCP stdio            (no network port)
     MODE=all          API + MCP HTTP simultaneously (dev / POC)
 
 ProbeServer always starts on :9000 (probe.enabled=true in config.yaml).
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
-import os
 import sys
 
+import adapters.input.fastmcp.prompts as prompts_module
+import adapters.input.fastmcp.register as tools_module
+import adapters.input.fastmcp.resources as resources_module
 from adapters.input.fastapi.register import register_routers
+from arclith import Arclith
+from infrastructure.logging_setup import setup_logging
 
 # ── MCP registration imports ──────────────────────────────────────────────────
 # Structure :
@@ -30,17 +34,11 @@ from adapters.input.fastapi.register import register_routers
 #   2. Exporter dans les __init__.py respectifs : from .recipe_tools import RecipeMCP
 #   3. Ajouter l'instanciation dans les fonctions register_* (tools.py, prompts.py, resources.py)
 
-import adapters.input.fastmcp.prompts as prompts_module
-import adapters.input.fastmcp.resources as resources_module
-import adapters.input.fastmcp.register as tools_module
-from arclith import Arclith
-from infrastructure.logging_setup import setup_logging
-
 _logger = setup_logging()
 _CONFIG = Path(__file__).parent / "config"
-_VALID_MODES = {"api", "mcp_http", "mcp_sse", "mcp_stdio", "all"}
+_VALID_MODES = {"api", "mcp_http", "mcp_sse", "all"}
 
-MODE = os.getenv("MODE", "api")
+MODE = os.getenv("MODE", "all")
 
 if MODE not in _VALID_MODES:
     _logger.error(f"MODE invalide: {MODE!r} — valeurs acceptées: {sorted(_VALID_MODES)}")
@@ -76,9 +74,6 @@ def _make_mcp_runner(transport: str):
         case "mcp_sse":
             def _run() -> None:
                 arclith.run_mcp_sse(mcp)
-        case "mcp_stdio":
-            def _run() -> None:
-                arclith.run_mcp_stdio(mcp)
         case _:
             raise ValueError(f"Unknown MCP transport: {transport}")
 
@@ -97,9 +92,6 @@ if __name__ == "__main__":
         case "mcp_http" | "mcp_sse":
             arclith.run_with_probes(_make_mcp_runner(MODE), transports=[MODE])
 
-        case "mcp_stdio":
-            # stdio monopolises stdin/stdout — probes still run on :9000 in a daemon thread
-            arclith.run_with_probes(_make_mcp_runner("mcp_stdio"), transports=["mcp_stdio"])
 
         case "all":
             _logger.info("🧩 MODE=all — API :8000 + MCP HTTP :8001 + probes :9000")

@@ -83,12 +83,11 @@ async def test_recent_is_newest_first(client, service):
 # --- ingredient://{uuid} ---
 
 async def test_get_resource_found(client, service):
-    item = await service.create(Ingredient(name="Sel", unit="g"))
+    item = await service.create(Ingredient(name="Sel"))
     result = await client.read_resource(f"ingredient://{item.uuid}")
     data = _json(result)
     assert data is not None
     assert data["name"] == "Sel"
-    assert data["unit"] == "g"
 
 
 async def test_get_resource_not_found_returns_null(client):

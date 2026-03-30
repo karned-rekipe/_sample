@@ -36,8 +36,9 @@ ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONPATH="/app" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
+
     # Transport à activer — surcharger avec: docker run -e MODE=mcp_http …
-    # Valeurs: api | mcp_http | mcp_sse | mcp_stdio | all
+    # Valeurs: api | mcp_http | mcp_sse | all
     MODE=api
 
 USER app
