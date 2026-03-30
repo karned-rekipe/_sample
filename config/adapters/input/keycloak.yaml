@@ -1,4 +1,4 @@
-url: http://127.0.0.1:8080
-realm: rekipe
+url: http://127.0.0.1:5990
+realm: sample
 # audience: rekipe-sample   # optionnel — valide le claim "aud" du JWT
 

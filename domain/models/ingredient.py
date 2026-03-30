@@ -7,7 +7,7 @@ class Ingredient(Entity):
     name: str = Field(
         ...,
         description="Nom de l'ingrédient",
-        examples=["Farine de blé", "Sel fin"],
+        examples = ["Ingrédient 1", "Ingrédient 2"],
     )
 
     @field_validator("name", mode="before")

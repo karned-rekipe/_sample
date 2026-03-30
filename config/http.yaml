@@ -1,0 +1,12 @@
+idempotency:
+  enabled: true
+  ttl_seconds: 86400  # 24 hours - critical for e-commerce (payment duplicates)
+  required: false  # Optional by default - set to true in production
+
+etag:
+  enabled: true  # Optimistic locking via HTTP headers
+
+cache_control:
+  get_single_max_age: 300  # 5 minutes - single resource GET
+  get_list_max_age: 60  # 1 minute - collection/list GET
+

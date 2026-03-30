@@ -40,10 +40,5 @@ uv run python main_api.py
 uv run python main_mcp_sse.py
 ```
 
-### MCP — stdio
-
-```bash
-uv run python main_mcp_stdio.py
-```
 
 

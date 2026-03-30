@@ -35,6 +35,31 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Configuration Keycloak (authentification JWT)
+
+Le projet utilise Keycloak pour l'authentification JWT. Pour initialiser Keycloak avec le realm et le client
+nécessaires :
+
+```bash
+# Depuis la racine du workspace Rekipe
+python scripts/seed_keycloak.py
+```
+
+Ce script crée automatiquement :
+
+- **Realm** : `sample`
+- **Client** : `sample` (configuré pour PKCE)
+- **User de test** : `test` / `test`
+- **Redirect URIs** : configurés pour Swagger UI sur le port 8000
+
+Configuration attendue :
+
+- Keycloak : `http://127.0.0.1:5990`
+- Realm : `sample`
+- Client ID : `sample`
+
+Vous pouvez ensuite tester l'authentification depuis Swagger UI : http://127.0.0.1:8000/docs
+
 ### 1. API REST (FastAPI)
 
 Expose un CRUD HTTP sur les ingrédients.
@@ -46,28 +71,7 @@ python main_api.py
 - Swagger UI : [http://localhost:8000/docs](http://localhost:8000/docs)
 - Base URL : `http://localhost:8000/ingredient/v1/`
 
-### 2. Serveur MCP stdio
-
-Utilisé par les clients MCP locaux (Claude Desktop, Cursor…). Le client lance le process lui-même.
-
-```bash
-python main_mcp_stdio.py
-```
-
-Configuration `mcp.json` :
-
-```json
-{
-  "mcpServers": {
-    "rekipe-ingredients": {
-      "command": "/chemin/vers/.venv/bin/python",
-      "args": ["/chemin/vers/framework/main_mcp_stdio.py"]
-    }
-  }
-}
-```
-
-### 3. Serveur MCP SSE
+### 2. Serveur MCP SSE
 
 Expose les outils MCP via HTTP SSE. Le serveur doit tourner avant que le client s'y connecte.  
 Tourne sur le port **8000**
