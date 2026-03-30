@@ -1,4 +1,5 @@
 url: http://127.0.0.1:5990
 realm: sample
+client_id: sample  # Client public PKCE pour Swagger UI
 # audience: rekipe-sample   # optionnel — valide le claim "aud" du JWT
 
