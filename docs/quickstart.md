@@ -31,19 +31,18 @@ uv sync
 ### API (FastAPI)
 
 ```bash
-uv run python main_api.py
+MODE=api uv run python main.py
 ```
 
 ### MCP — SSE
 
 ```bash
-uv run python main_mcp_sse.py
+MODE=mcp_sse uv run python main.py
 ```
 
 ## Secrets et Vault
 
 Par défaut les secrets (URI MongoDB, clé API LM…) sont lus depuis `secrets.yaml` (fichier local gitignored).
 Pour utiliser HashiCorp Vault en dev ou en production : → [Configurer Vault et les secrets](vault.md)
-
 
 

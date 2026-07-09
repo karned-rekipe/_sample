@@ -46,7 +46,7 @@ wheels = [
 
 [[package]]
 name = "arclith"
-version = "0.8.0"
+version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi" },
@@ -56,9 +56,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "uuid6" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/f9/1cce682de4161a4aac10c4eec4f9ba0375b7bf5df0a5c8a17db51863d4e2/arclith-0.8.0.tar.gz", hash = "sha256:1e168dcbacf0076236867e7d50b924857e761f821a181408b0e0ef5f8bf52f67", size = 228804, upload-time = "2026-03-30T21:07:22.095Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/2c/f6d5e63240461a225a4cfbdbe6892031984e3081dd46415d2583672694c3/arclith-0.9.0.tar.gz", hash = "sha256:067c95e591dcdfadf5ebb4da8db485adb8c1e5b42030972ef4d239bc02b727fd", size = 311349, upload-time = "2026-04-04T18:27:37.132Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ea/43/86cc4b0849d519ecfa99e70088a8e05e8cb6d28a50272c2598f7ec45c88d/arclith-0.8.0-py3-none-any.whl", hash = "sha256:727a414540c71216a996d28c176f220031cd54838c330a60046427cab6868824", size = 73766, upload-time = "2026-03-30T21:07:20.667Z" },
+    { url = "https://files.pythonhosted.org/packages/90/9d/fe2872d94739fa4288bbe35356bcc8135ffe0e67b2ae24ac222364ecee83/arclith-0.9.0-py3-none-any.whl", hash = "sha256:0a7a477db4501e63942b4ad4f7b92d7536973b4aa8853a1571d55299b6104b20", size = 74742, upload-time = "2026-04-04T18:27:35.301Z" },
 ]
 
 [package.optional-dependencies]
@@ -75,6 +75,43 @@ mcp = [
 ]
 mongodb = [
     { name = "motor" },
+]
+
+[[package]]
+name = "arclith-sample"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "arclith", extra = ["duckdb", "fastapi", "mcp", "mongodb"] },
+    { name = "hvac" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "bandit" },
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "radon" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "arclith", extras = ["mongodb", "fastapi", "mcp", "duckdb"], specifier = ">=0.8.1" },
+    { name = "hvac", specifier = ">=2.3.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", extras = ["toml"], specifier = "==1.9.4" },
+    { name = "mypy", specifier = "==1.19.1" },
+    { name = "pytest", specifier = "==9.0.2" },
+    { name = "pytest-asyncio", specifier = "==1.3.0" },
+    { name = "pytest-cov", specifier = "==7.0.0" },
+    { name = "radon", specifier = "==6.0.1" },
+    { name = "ruff", specifier = "==0.15.6" },
 ]
 
 [[package]]
@@ -1113,43 +1150,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/22/f5/df4e9027acead3ecc63e50fe1e36aca1523e1719559c499951bb4b53188f/referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8", size = 78036, upload-time = "2025-10-13T15:30:48.871Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl", hash = "sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231", size = 26766, upload-time = "2025-10-13T15:30:47.625Z" },
-]
-
-[[package]]
-name = "rekipe-sample"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "arclith", extra = ["duckdb", "fastapi", "mcp", "mongodb"] },
-    { name = "hvac" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "bandit" },
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "radon" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "arclith", extras = ["mongodb", "fastapi", "mcp", "duckdb"], specifier = ">=0.8.0" },
-    { name = "hvac", specifier = ">=2.3.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "bandit", extras = ["toml"], specifier = "==1.9.4" },
-    { name = "mypy", specifier = "==1.19.1" },
-    { name = "pytest", specifier = "==9.0.2" },
-    { name = "pytest-asyncio", specifier = "==1.3.0" },
-    { name = "pytest-cov", specifier = "==7.0.0" },
-    { name = "radon", specifier = "==6.0.1" },
-    { name = "ruff", specifier = "==0.15.6" },
 ]
 
 [[package]]

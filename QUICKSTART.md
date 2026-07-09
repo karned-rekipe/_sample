@@ -1,6 +1,6 @@
-# 🚀 Guide de démarrage rapide — _sample
+# 🚀 Guide de démarrage rapide — Arclith sample
 
-Ce guide vous permet de démarrer rapidement le projet `_sample` avec authentification Keycloak.
+Ce guide permet de démarrer rapidement l'implémentation fonctionnelle `_sample` avec authentification Keycloak.
 
 ## 📋 Prérequis
 
@@ -11,7 +11,7 @@ Ce guide vous permet de démarrer rapidement le projet `_sample` avec authentifi
 ## 🔧 Installation
 
 ```bash
-cd /Users/killian/Karned/repos/Rekipe/_sample
+cd _sample
 uv sync --frozen
 ```
 
@@ -27,10 +27,9 @@ Si Keycloak n'est pas démarré, lancez-le (via Docker, Podman, ou installation 
 
 ### 2. Initialiser le realm et le client
 
-Depuis la **racine du workspace Rekipe** :
+Depuis la racine du workspace local qui contient les scripts Keycloak :
 
 ```bash
-cd /Users/killian/Karned/projets/Rekipe
 python scripts/seed_keycloak.py
 ```
 
@@ -55,7 +54,7 @@ curl http://127.0.0.1:5990/realms/sample/.well-known/openid-configuration | jq .
 ### Mode API (FastAPI REST)
 
 ```bash
-cd /Users/killian/Karned/repos/Rekipe/_sample
+cd _sample
 MODE=api uv run --frozen python main.py
 ```
 
@@ -64,7 +63,7 @@ L'API démarre sur **http://127.0.0.1:8000**
 ### Mode MCP HTTP
 
 ```bash
-cd /Users/killian/Karned/repos/Rekipe/_sample
+cd _sample
 MODE=mcp_http uv run --frozen python main.py
 ```
 
@@ -73,14 +72,14 @@ Le serveur MCP démarre sur **http://127.0.0.1:8001**
 ### Mode MCP SSE
 
 ```bash
-cd /Users/killian/Karned/repos/Rekipe/_sample
+cd _sample
 MODE=mcp_sse uv run --frozen python main.py
 ```
 
 ### Mode ALL (API + MCP HTTP)
 
 ```bash
-cd /Users/killian/Karned/repos/Rekipe/_sample
+cd _sample
 MODE=all uv run --frozen python main.py
 ```
 
@@ -170,6 +169,5 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/ingredient/v1/
 
 - Architecture : `AGENTS.md`
 - Configuration complète : `config/`
-- Décisions : `framework/docs/decisions.md`
-- Auth JWT : `framework/docs/auth.md`
-
+- Décisions : `../arclith/docs/decisions.md`
+- Auth JWT : `../arclith/docs/auth.md`

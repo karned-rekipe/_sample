@@ -1,8 +1,8 @@
-# AGENTS.md — `_sample/`
+# AGENTS.md — Arclith sample (`_sample/`)
 
 ## Contexte global
 
-`_sample/` est le bac à sable R&D de Rekipe. Il sert à tester et faire évoluer `arclith` avant toute publication sur
+`_sample/` est le bac à sable R&D d'Arclith. Il sert à tester et faire évoluer `arclith` avant toute publication sur
 PyPI. Il implémente un CRUD `Ingredient` minimal pour valider les primitives du framework. **Ne jamais déployer.**
 
 ## Rôle
@@ -13,7 +13,7 @@ PyPI. Il implémente un CRUD `Ingredient` minimal pour valider les primitives du
 
 ## Règles de développement
 
-- Ce repo utilise `arclith` en mode **editable** depuis `../framework` (voir `pyproject.toml`)
+- Ce repo peut utiliser `arclith` en mode **editable** depuis `../arclith` (voir `pyproject.toml`)
 - Toute modification doit rester expérimentale — aucune logique métier permanente
 - Les tests sont indicatifs, pas une gate de qualité (contrairement à `recipe/` et `agent-recipe-creator/`)
 
@@ -62,14 +62,14 @@ mcp:
 ## Commandes utiles
 
 ```bash
-uv run --frozen python main_api.py         # REST :8000
-uv run --frozen python main_mcp_sse.py     # MCP SSE :8001
+MODE=api uv run --frozen python main.py      # REST :8000
+MODE=mcp_sse uv run --frozen python main.py  # MCP SSE :8001
 uv run --frozen pytest -v
 
-# Utiliser le framework local en editable
+# Utiliser Arclith local en editable
 # Dans pyproject.toml :
 # [tool.uv.sources]
-# arclith = { path = "../framework", editable = true }
+# arclith = { path = "../arclith", editable = true }
 uv sync
 ```
 
@@ -79,5 +79,4 @@ uv sync
 2. `adapters/input/fastmcp/tools/ingredient_tools.py` — pattern simplifié de registration MCP
 3. `adapters/input/fastapi/routers/ingredient_router.py` — pattern REST conforme HTTP conventions
 4. `config.yaml` — configuration minimale pour le dev local
-5. `../framework/docs/http-conventions.md` — conventions HTTP/REST SOTA
-
+5. `../arclith/docs/http-conventions.md` — conventions HTTP/REST SOTA

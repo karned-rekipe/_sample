@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rekipe-sample"
+name = "arclith-sample"
 version = "0.1.0"
-description = "Sample CRUD — built on arclith"
+description = "Functional sample CRUD built on Arclith"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "arclith[mongodb,fastapi,mcp,duckdb]>=0.8.1",

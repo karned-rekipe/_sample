@@ -1,27 +1,27 @@
-# framework
+# Arclith Sample
+
+Implémentation fonctionnelle minimale d'Arclith pour tester le framework en conditions réelles.
+
+Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters memory, MongoDB et DuckDB. Il sert de bac à sable pour valider les primitives du framework avant publication.
+
+## Project Links
+
+- Framework: [karned-rekipe/arclith](https://github.com/karned-rekipe/arclith)
+- Sample repository: [karned-rekipe/_sample](https://github.com/karned-rekipe/_sample)
+- GitHub Project: [Arclith backlog](https://github.com/orgs/karned-rekipe/projects/5)
+- Framework issues: [Arclith issues](https://github.com/karned-rekipe/arclith/issues)
 
 ## Architecture
 
-**domain/models/**
-Entités et objets valeur du domaine métier (ex: Recipe, Ingredient) — aucune dépendance extérieure
-
-**domain/ports/**
-Interfaces abstraites (ABC) définissant les contrats entre le domaine et le monde extérieur
-
-**domain/services/**
-Services métier purs qui orchestrent la logique domaine sans toucher l'infrastructure
-
-**application/use_cases/**
-Cas d'usage applicatifs — orchestrent les ports et services pour répondre à une intention utilisateur
-
-**adapters/input/**
-Adaptateurs entrants — traduisent une requête externe (CLI, HTTP, événement…) en appel de cas d'usage
-
-**adapters/output/**
-Adaptateurs sortants — implémentent les ports de sortie (base de données, API tierce, fichier…)
-
-**infrastructure/**
-Câblage global — instanciation et injection des dépendances, configuration, point d'entrée de l'app
+| Dossier | Rôle |
+|---|---|
+| `domain/models/` | Entités et objets valeur du domaine métier, sans dépendance extérieure |
+| `domain/ports/` | Interfaces abstraites entre le domaine et le monde extérieur |
+| `application/use_cases/` | Cas d'usage applicatifs |
+| `application/services/` | Services applicatifs construits sur les use cases Arclith |
+| `adapters/input/` | Adaptateurs entrants FastAPI et FastMCP |
+| `adapters/output/` | Adaptateurs sortants memory, MongoDB, DuckDB |
+| `infrastructure/` | Câblage global, configuration et injection des dépendances |
 
 ---
 
@@ -30,9 +30,7 @@ Câblage global — instanciation et injection des dépendances, configuration, 
 ### Prérequis
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv sync --frozen
 ```
 
 ### Configuration Keycloak (authentification JWT)
@@ -41,7 +39,7 @@ Le projet utilise Keycloak pour l'authentification JWT. Pour initialiser Keycloa
 nécessaires :
 
 ```bash
-# Depuis la racine du workspace Rekipe
+# Depuis la racine du workspace local qui contient les scripts Keycloak
 python scripts/seed_keycloak.py
 ```
 
@@ -65,7 +63,7 @@ Vous pouvez ensuite tester l'authentification depuis Swagger UI : http://127.0.0
 Expose un CRUD HTTP sur les ingrédients.
 
 ```bash
-python main_api.py
+MODE=api uv run --frozen python main.py
 ```
 
 - Swagger UI : [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -77,7 +75,7 @@ Expose les outils MCP via HTTP SSE. Le serveur doit tourner avant que le client 
 Tourne sur le port **8000**
 
 ```bash
-python main_mcp_sse.py
+MODE=mcp_sse uv run --frozen python main.py
 ```
 
 - SSE endpoint : `http://localhost:8001/sse`
@@ -88,7 +86,7 @@ Configuration `mcp.json` :
 ```json
 {
   "mcpServers": {
-    "rekipe-ingredients-sse": {
+    "arclith-ingredients-sse": {
       "url": "http://localhost:8000/sse"
     }
   }
@@ -99,30 +97,12 @@ Configuration `mcp.json` :
 
 ---
 
-## Passer de InMemory à MongoDB
+## Passer de Memory à MongoDB
 
-Par défaut, les trois points d'entrée (`main_api.py`, `main_mcp.py`, `main_mcp_sse.py`) utilisent `InMemoryIngredientRepository` — les données sont perdues à chaque redémarrage.
+L'adapter actif est piloté par `config/adapters/adapters.yaml`.
 
-Pour persister les données dans MongoDB, remplace dans `infrastructure/api.py` et/ou `infrastructure/mcp.py` :
-
-```python
-# Avant
-from adapters.output.in_memory_ingredient_repository import InMemoryIngredientRepository
-ingredient_repository = InMemoryIngredientRepository()
-
-# Après
-from adapters.output.mongodb_config import MongoDBConfig
-from adapters.output.mongodb_ingredient_repository import MongoDBIngredientRepository
-
-config = MongoDBConfig(
-    uri="mongodb://localhost:27017",
-    db_name="rekipe",
-    collection_name="ingredients"
-)
-ingredient_repository = MongoDBIngredientRepository(config)
+```yaml
+repository: mongodb
 ```
 
-`MongoDBConfig` accepte n'importe quelle connection string — tu peux ainsi viser une instance locale, Atlas, ou une instance par tenant en passant un `uri` différent.
-
-Seule la ligne d'instanciation change dans `infrastructure/` : le domaine, les services et les cas d'usage n'ont aucune connaissance de MongoDB.
-
+La configuration MongoDB se trouve dans `config/adapters/output/mongodb.yaml`. Le domaine, les services et les cas d'usage restent indépendants de MongoDB.

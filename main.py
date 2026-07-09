@@ -61,7 +61,7 @@ def _make_api_runner():
 
 
 def _make_mcp_runner(transport: str):
-    mcp = arclith.fastmcp(f"Rekipe-sample ({transport})")
+    mcp = arclith.fastmcp(f"Arclith sample ({transport})")
     tools_module.register_tools(mcp, arclith)
     prompts_module.register_prompts(mcp, arclith)
     resources_module.register_resources(mcp, arclith)
@@ -100,4 +100,3 @@ if __name__ == "__main__":
                 _make_mcp_runner("mcp_http"),
                 transports=["api", "mcp_http"],
             )
-
