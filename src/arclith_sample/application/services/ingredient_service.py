@@ -1,7 +1,7 @@
 from arclith_sample.application.use_cases import FindByNameUseCase
 from arclith import BaseService, Logger
 from arclith_sample.domain.models.ingredient import Ingredient
-from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
+from arclith_sample.domain.ports.outbound.ingredient_repository import IngredientRepository
 
 
 class IngredientService(BaseService[Ingredient]):

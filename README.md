@@ -19,8 +19,8 @@ Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters mem
 | `src/arclith_sample/domain/ports/` | Interfaces abstraites entre le domaine et le monde extérieur |
 | `src/arclith_sample/application/use_cases/` | Cas d'usage applicatifs |
 | `src/arclith_sample/application/services/` | Services applicatifs construits sur les use cases Arclith |
-| `src/arclith_sample/adapters/input/` | Adaptateurs entrants FastAPI et FastMCP |
-| `src/arclith_sample/adapters/output/` | Adaptateurs sortants memory, MongoDB, DuckDB |
+| `src/arclith_sample/adapters/inbound/` | Adaptateurs entrants FastAPI et FastMCP |
+| `src/arclith_sample/adapters/outbound/` | Adaptateurs sortants memory, MongoDB, DuckDB |
 | `src/arclith_sample/infrastructure/` | Câblage global, configuration et injection des dépendances |
 
 ---
@@ -105,4 +105,4 @@ L'adapter actif est piloté par `config/adapters/adapters.yaml`.
 repository: mongodb
 ```
 
-La configuration MongoDB se trouve dans `config/adapters/output/mongodb.yaml`. Le domaine, les services et les cas d'usage restent indépendants de MongoDB.
+La configuration MongoDB se trouve dans `config/adapters/outbound/mongodb.yaml`. Le domaine, les services et les cas d'usage restent indépendants de MongoDB.

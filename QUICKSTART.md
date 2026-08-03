@@ -150,7 +150,7 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/ingredient/v1/
 
 → Vérifiez que :
 
-- La configuration dans `config/adapters/input/keycloak.yaml` correspond à votre Keycloak
+- La configuration dans `config/adapters/inbound/keycloak.yaml` correspond à votre Keycloak
 - Le `redirect_uri` pointe vers le bon port (8000 par défaut)
 
 ### Swagger UI : erreur d'autorisation
@@ -163,7 +163,7 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/ingredient/v1/
 
 ### Port 8000 déjà utilisé
 
-→ Changez le port dans `config/adapters/input/fastapi.yaml` et relancez `seed_keycloak.py` avec le nouveau port
+→ Changez le port dans `config/adapters/inbound/fastapi.yaml` et relancez `seed_keycloak.py` avec le nouveau port
 
 ## 📚 Documentation
 
