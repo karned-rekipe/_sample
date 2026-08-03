@@ -2,7 +2,7 @@
 
 import pytest
 
-from infrastructure.purge_registry import PurgeRegistry, purge_registry
+from arclith_sample.infrastructure.purge_registry import PurgeRegistry, purge_registry
 
 
 @pytest.fixture

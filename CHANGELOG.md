@@ -1,10 +1,20 @@
-our # Changelog
+# Changelog
 
 All notable changes to the _sample template project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+
+## [0.2.0] — 2026-08-03
+
+### Changed
+
+- Migrated the template implementation to `src/arclith_sample/...`.
+- Updated imports, packaging, lint, typecheck and coverage settings for the namespaced source layout.
+- Uses local editable `../arclith` during sample validation while generated projects still use the published PyPI package.
+
+---
 
 ### Changed
 
@@ -34,4 +44,3 @@ If you have an existing project using the old template:
 1. Open `config/adapters/adapters.yaml`
 2. Change `repository: mongodb` to `repository: memory` (or keep mongodb if you prefer)
 3. Review the new inline documentation for adapter configuration options
-

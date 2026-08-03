@@ -8,7 +8,7 @@ L'exemple utilisé est `Recipe` (une recette).
 
 ## 1. Domain — Modèle
 
-`domain/models/recipe.py`
+`src/arclith_sample/domain/models/recipe.py`
 
 ```python
 from typing import Optional
@@ -42,12 +42,12 @@ class Recipe(Entity):
 
 ## 2. Domain — Port repository
 
-`domain/ports/recipe_repository.py`
+`src/arclith_sample/domain/ports/output/recipe_repository.py`
 
 ```python
 from abc import abstractmethod
 from arclith.domain.ports.repository import Repository
-from domain.models.recipe import Recipe
+from arclith_sample.domain.models.recipe import Recipe
 
 
 class RecipeRepository(Repository[Recipe]):
@@ -62,11 +62,11 @@ class RecipeRepository(Repository[Recipe]):
 
 Si l'entité nécessite un use case propre (ex. recherche par nom) :
 
-`application/use_cases/find_recipe_by_name.py`
+`src/arclith_sample/application/use_cases/find_recipe_by_name.py`
 
 ```python
-from domain.models.recipe import Recipe
-from domain.ports.recipe_repository import RecipeRepository
+from arclith_sample.domain.models.recipe import Recipe
+from arclith_sample.domain.ports.output.recipe_repository import RecipeRepository
 from arclith.domain.ports.logger import Logger
 
 
@@ -82,7 +82,7 @@ class FindRecipeByNameUseCase:
         return result
 ```
 
-Exposer dans `application/use_cases/__init__.py` :
+Exposer dans `src/arclith_sample/application/use_cases/__init__.py` :
 
 ```python
 from .find_recipe_by_name import FindRecipeByNameUseCase
@@ -92,13 +92,13 @@ from .find_recipe_by_name import FindRecipeByNameUseCase
 
 ## 4. Application — Service
 
-`application/services/recipe_service.py`
+`src/arclith_sample/application/services/recipe_service.py`
 
 ```python
 from arclith import BaseService, Logger
-from domain.models.recipe import Recipe
-from domain.ports.recipe_repository import RecipeRepository
-from application.use_cases import FindRecipeByNameUseCase
+from arclith_sample.domain.models.recipe import Recipe
+from arclith_sample.domain.ports.output.recipe_repository import RecipeRepository
+from arclith_sample.application.use_cases import FindRecipeByNameUseCase
 
 
 class RecipeService(BaseService[Recipe]):
@@ -116,12 +116,12 @@ class RecipeService(BaseService[Recipe]):
 
 ### Memory
 
-`adapters/output/memory/recipe_repository.py`
+`src/arclith_sample/adapters/output/memory/repositories/recipe_repository.py`
 
 ```python
 from arclith.adapters.output.memory.repository import InMemoryRepository
-from domain.models.recipe import Recipe
-from domain.ports.recipe_repository import RecipeRepository
+from arclith_sample.domain.models.recipe import Recipe
+from arclith_sample.domain.ports.output.recipe_repository import RecipeRepository
 
 
 class InMemoryRecipeRepository(InMemoryRepository[Recipe], RecipeRepository):
@@ -131,15 +131,15 @@ class InMemoryRecipeRepository(InMemoryRepository[Recipe], RecipeRepository):
 
 ### MongoDB
 
-`adapters/output/mongodb/recipe_repository.py`
+`src/arclith_sample/adapters/output/mongodb/repositories/recipe_repository.py`
 
 ```python
 import re
 from arclith.adapters.output.mongodb.config import MongoDBConfig
 from arclith.adapters.output.mongodb.repository import MongoDBRepository
 from arclith.domain.ports.logger import Logger
-from domain.models.recipe import Recipe
-from domain.ports.recipe_repository import RecipeRepository
+from arclith_sample.domain.models.recipe import Recipe
+from arclith_sample.domain.ports.output.recipe_repository import RecipeRepository
 
 
 class MongoDBRecipeRepository(MongoDBRepository[Recipe], RecipeRepository):
@@ -159,12 +159,12 @@ class MongoDBRecipeRepository(MongoDBRepository[Recipe], RecipeRepository):
 
 ### DuckDB
 
-`adapters/output/duckdb/recipe_repository.py`
+`src/arclith_sample/adapters/output/duckdb/repositories/recipe_repository.py`
 
 ```python
 from arclith.adapters.output.duckdb.repository import DuckDBRepository
-from domain.models.recipe import Recipe
-from domain.ports.recipe_repository import RecipeRepository
+from arclith_sample.domain.models.recipe import Recipe
+from arclith_sample.domain.ports.output.recipe_repository import RecipeRepository
 
 
 class DuckDBRecipeRepository(DuckDBRepository[Recipe], RecipeRepository):
@@ -183,7 +183,7 @@ class DuckDBRecipeRepository(DuckDBRepository[Recipe], RecipeRepository):
 
 ## 6. Adapters input — Schémas
 
-`adapters/input/schemas/recipe_schema.py`
+`src/arclith_sample/adapters/input/schemas/recipe_schema.py`
 
 ```python
 from typing import Optional
@@ -215,15 +215,15 @@ class RecipeSchema(BaseSchema):
 
 ## 7. Adapters input — Router FastAPI
 
-`adapters/input/fastapi/recipe_router.py`
+`src/arclith_sample/adapters/input/fastapi/routers/recipe_router.py`
 
 Copier `ingredient_router.py`, remplacer `Ingredient` → `Recipe` et adapter les champs.
 
-Puis enregistrer dans `adapters/input/fastapi/router.py` :
+Puis enregistrer dans `src/arclith_sample/adapters/input/fastapi/register.py` :
 
 ```python
-from infrastructure.recipe_container import build_recipe_service
-from adapters.input.fastapi.recipe_router import RecipeRouter
+from arclith_sample.infrastructure.containers.recipe_container import build_recipe_service
+from arclith_sample.adapters.input.fastapi.routers.recipe_router import RecipeRouter
 
 def register_routers(app: FastAPI, arclith: Arclith) -> None:
     ...
@@ -235,15 +235,15 @@ def register_routers(app: FastAPI, arclith: Arclith) -> None:
 
 ## 8. Adapters input — Tools FastMCP
 
-`adapters/input/fastmcp/recipe_tools.py`
+`src/arclith_sample/adapters/input/fastmcp/tools/recipe_tools.py`
 
 Copier `ingredient_tools.py`, remplacer `Ingredient` → `Recipe` et adapter les champs.
 
-Puis enregistrer dans `adapters/input/fastmcp/tools.py` :
+Puis enregistrer dans `src/arclith_sample/adapters/input/fastmcp/register.py` :
 
 ```python
-from infrastructure.recipe_container import build_recipe_service
-from adapters.input.fastmcp.recipe_tools import RecipeMCP
+from arclith_sample.infrastructure.containers.recipe_container import build_recipe_service
+from arclith_sample.adapters.input.fastmcp.tools.recipe_tools import RecipeMCP
 
 def register_tools(mcp: fastmcp.FastMCP, arclith: Arclith) -> None:
     ...
@@ -255,50 +255,49 @@ def register_tools(mcp: fastmcp.FastMCP, arclith: Arclith) -> None:
 
 ## 9. Infrastructure — Container
 
-`infrastructure/recipe_container.py`
+`src/arclith_sample/infrastructure/containers/recipe_container.py`
 
 ```python
 from arclith import Arclith
 from arclith.adapters.output.mongodb.config import MongoDBConfig
 from arclith.domain.ports.logger import Logger
-from application.services.recipe_service import RecipeService
+from arclith_sample.application.services.recipe_service import RecipeService
 
 
 def build_recipe_service(arclith: Arclith) -> tuple[RecipeService, Logger]:
     config = arclith.config
     match config.adapters.repository:
         case "mongodb":
-            from adapters.output.mongodb.recipe_repository import MongoDBRecipeRepository
+            from arclith_sample.adapters.output.mongodb.repository import MongoDBRecipeRepository
             mongo = config.adapters.mongodb
             repo = MongoDBRecipeRepository(MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name), arclith.logger)
         case "duckdb":
-            from adapters.output.duckdb.recipe_repository import DuckDBRecipeRepository
+            from arclith_sample.adapters.output.duckdb.repository import DuckDBRecipeRepository
             repo = DuckDBRecipeRepository(config.adapters.duckdb.path)
         case _:
-            from adapters.output.memory.recipe_repository import InMemoryRecipeRepository
+            from arclith_sample.adapters.output.memory.repository import InMemoryRecipeRepository
             repo = InMemoryRecipeRepository()
     return RecipeService(repo, arclith.logger, config.soft_delete.retention_days), arclith.logger
 ```
 
-Puis exposer dans `infrastructure/container.py` :
+Puis exposer dans `src/arclith_sample/infrastructure/container.py` :
 
 ```python
-from infrastructure.recipe_container import build_recipe_service
+from arclith_sample.infrastructure.containers.recipe_container import build_recipe_service
 ```
 
 ---
 
 ## Checklist
 
-- [ ] `domain/models/recipe.py`
-- [ ] `domain/ports/recipe_repository.py`
-- [ ] `application/use_cases/find_recipe_by_name.py` + `__init__.py`
-- [ ] `application/services/recipe_service.py`
-- [ ] `adapters/output/memory/recipe_repository.py`
-- [ ] `adapters/output/mongodb/recipe_repository.py`
-- [ ] `adapters/output/duckdb/recipe_repository.py`
-- [ ] `adapters/input/schemas/recipe_schema.py`
-- [ ] `adapters/input/fastapi/recipe_router.py` + `router.py`
-- [ ] `adapters/input/fastmcp/recipe_tools.py` + `tools.py`
-- [ ] `infrastructure/recipe_container.py` + `container.py`
-
+- [ ] `src/arclith_sample/domain/models/recipe.py`
+- [ ] `src/arclith_sample/domain/ports/output/recipe_repository.py`
+- [ ] `src/arclith_sample/application/use_cases/find_recipe_by_name.py` + `__init__.py`
+- [ ] `src/arclith_sample/application/services/recipe_service.py`
+- [ ] `src/arclith_sample/adapters/output/memory/repositories/recipe_repository.py`
+- [ ] `src/arclith_sample/adapters/output/mongodb/repositories/recipe_repository.py`
+- [ ] `src/arclith_sample/adapters/output/duckdb/repositories/recipe_repository.py`
+- [ ] `src/arclith_sample/adapters/input/schemas/recipe_schema.py`
+- [ ] `src/arclith_sample/adapters/input/fastapi/routers/recipe_router.py` + `register.py`
+- [ ] `src/arclith_sample/adapters/input/fastmcp/tools/recipe_tools.py` + `register.py`
+- [ ] `src/arclith_sample/infrastructure/containers/recipe_container.py` + `container.py`

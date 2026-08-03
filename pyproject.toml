@@ -4,20 +4,23 @@ build-backend = "hatchling.build"
 
 [project]
 name = "arclith-sample"
-version = "0.1.0"
+version = "0.2.0"
 description = "Functional sample CRUD built on Arclith"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "arclith[mongodb,fastapi,mcp,duckdb]>=0.8.1",
+    "arclith[mongodb,fastapi,mcp,duckdb]>=0.10.0",
     "hvac>=2.3.0",
 ]
 
+[tool.uv.sources]
+arclith = { path = "../arclith", editable = true }
 
 [tool.mypy]
 explicit_package_bases = true
+mypy_path = "src"
 
 [tool.coverage.run]
-source = ["domain", "adapters", "application", "infrastructure"]
+source = ["src/arclith_sample"]
 branch = true
 omit = [
     "main_*.py",
@@ -36,10 +39,7 @@ testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "domain",
-    "adapters",
-    "application",
-    "infrastructure",
+    "src/arclith_sample",
 ]
 
 [dependency-groups]

@@ -15,13 +15,13 @@ Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters mem
 
 | Dossier | Rôle |
 |---|---|
-| `domain/models/` | Entités et objets valeur du domaine métier, sans dépendance extérieure |
-| `domain/ports/` | Interfaces abstraites entre le domaine et le monde extérieur |
-| `application/use_cases/` | Cas d'usage applicatifs |
-| `application/services/` | Services applicatifs construits sur les use cases Arclith |
-| `adapters/input/` | Adaptateurs entrants FastAPI et FastMCP |
-| `adapters/output/` | Adaptateurs sortants memory, MongoDB, DuckDB |
-| `infrastructure/` | Câblage global, configuration et injection des dépendances |
+| `src/arclith_sample/domain/models/` | Entités et objets valeur du domaine métier, sans dépendance extérieure |
+| `src/arclith_sample/domain/ports/` | Interfaces abstraites entre le domaine et le monde extérieur |
+| `src/arclith_sample/application/use_cases/` | Cas d'usage applicatifs |
+| `src/arclith_sample/application/services/` | Services applicatifs construits sur les use cases Arclith |
+| `src/arclith_sample/adapters/input/` | Adaptateurs entrants FastAPI et FastMCP |
+| `src/arclith_sample/adapters/output/` | Adaptateurs sortants memory, MongoDB, DuckDB |
+| `src/arclith_sample/infrastructure/` | Câblage global, configuration et injection des dépendances |
 
 ---
 
@@ -30,7 +30,7 @@ Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters mem
 ### Prérequis
 
 ```bash
-uv sync --frozen
+uv sync
 ```
 
 ### Configuration Keycloak (authentification JWT)
@@ -93,7 +93,7 @@ Configuration `mcp.json` :
 }
 ```
 
-> **Note** : les serveurs MCP (stdio et SSE) partagent la même instance `create_mcp()` définie dans `infrastructure/mcp.py`. Ajouter un nouveau transport ne nécessite aucune modification du domaine.
+> **Note** : les serveurs MCP partagent la même instance FastMCP assemblée dans `main.py`. Ajouter un nouveau transport ne nécessite aucune modification du domaine.
 
 ---
 

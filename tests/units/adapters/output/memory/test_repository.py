@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import pytest
 from uuid6 import uuid7
 
-from domain.models.ingredient import Ingredient
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 async def test_create_and_read(repo):

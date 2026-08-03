@@ -6,12 +6,12 @@ Chaque section correspond à un fichier à créer, dans l'ordre des couches (de 
 
 ---
 
-## 1. `domain/models/` — L'entité
+## 1. `src/arclith_sample/domain/models/` — L'entité
 
 Hérite de `Entity`. Contient uniquement les champs métier et leur validation.
 
 ```python
-# domain/models/ingredient.py
+# src/arclith_sample/domain/models/ingredient.py
 from dataclasses import dataclass
 from arclith.domain.models.entity import Entity
 
@@ -31,15 +31,15 @@ class Ingredient(Entity):
 
 ---
 
-## 2. `domain/ports/` — Le port spécifique
+## 2. `src/arclith_sample/domain/ports/` — Le port spécifique
 
 Si ton entité a des requêtes au-delà du CRUD générique, déclare-les ici sous forme d'interface abstraite.
 
 ```python
-# domain/ports/ingredient_repository.py
+# src/arclith_sample/domain/ports/output/ingredient_repository.py
 from abc import abstractmethod
 from arclith.domain.ports.repository import Repository
-from domain.models.ingredient import Ingredient
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 class IngredientRepository(Repository[Ingredient]):
@@ -51,16 +51,16 @@ class IngredientRepository(Repository[Ingredient]):
 
 ---
 
-## 3. `application/use_cases/` — Les cas d'usage spécifiques
+## 3. `src/arclith_sample/application/use_cases/` — Les cas d'usage spécifiques
 
 Les use cases génériques (create, read, update…) sont fournis par `arclith`.  
 Ajoute ici uniquement ce qui est propre à ton entité.
 
 ```python
-# application/use_cases/find_by_name.py
+# src/arclith_sample/application/use_cases/find_by_name.py
 from arclith.domain.ports.logger import Logger
-from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
+from arclith_sample.domain.models.ingredient import Ingredient
+from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
 
 
 class FindByNameUseCase:
@@ -77,17 +77,17 @@ class FindByNameUseCase:
 
 ---
 
-## 4. `application/services/` — La façade de service
+## 4. `src/arclith_sample/application/services/` — La façade de service
 
 Étend `BaseService` pour exposer les méthodes aux adapters. Ne contient pas de logique — délègue aux use cases.
 
 ```python
-# application/services/ingredient_service.py
+# src/arclith_sample/application/services/ingredient_service.py
 from arclith.application.services.base_service import BaseService
 from arclith.domain.ports.logger import Logger
-from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
-from application.use_cases import FindByNameUseCase
+from arclith_sample.domain.models.ingredient import Ingredient
+from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
+from arclith_sample.application.use_cases import FindByNameUseCase
 
 
 class IngredientService(BaseService[Ingredient]):
@@ -103,12 +103,12 @@ class IngredientService(BaseService[Ingredient]):
 
 ---
 
-## 5. `adapters/input/schemas/` — Les schémas Pydantic
+## 5. `src/arclith_sample/adapters/input/schemas/` — Les schémas Pydantic
 
 Séparent le modèle HTTP du modèle domaine. Un schéma par intention (création, mise à jour, réponse).
 
 ```python
-# adapters/input/schemas/ingredient_schema.py
+# src/arclith_sample/adapters/input/schemas/ingredient_schema.py
 from arclith.adapters.input.schemas.base_schema import BaseSchema
 
 
@@ -126,15 +126,15 @@ class IngredientSchema(BaseSchema):  # réponse — hérite de BaseSchema (uuid,
 
 ---
 
-## 6. `adapters/output/` — Les repositories concrets
+## 6. `src/arclith_sample/adapters/output/` — Les repositories concrets
 
 Implémente le port en héritant du repository `arclith` correspondant **et** du port spécifique.
 
 ```python
-# adapters/output/memory/repository.py
+# src/arclith_sample/adapters/output/memory/repositories/ingredient_repository.py
 from arclith.adapters.output.memory.repository import InMemoryRepository
-from domain.models.ingredient import Ingredient
-from domain.ports.ingredient_repository import IngredientRepository
+from arclith_sample.domain.models.ingredient import Ingredient
+from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
 
 
 class InMemoryIngredientRepository(InMemoryRepository[Ingredient], IngredientRepository):
@@ -145,7 +145,7 @@ class InMemoryIngredientRepository(InMemoryRepository[Ingredient], IngredientRep
 Même pattern pour MongoDB :
 
 ```python
-# adapters/output/mongodb/repository.py
+# src/arclith_sample/adapters/output/mongodb/repositories/ingredient_repository.py
 from arclith.adapters.output.mongodb.repository import MongoDBRepository
 
 
@@ -159,14 +159,14 @@ class MongoDBIngredientRepository(MongoDBRepository[Ingredient], IngredientRepos
 
 ---
 
-## 7. `infrastructure/container.py` — L'injection de dépendances
+## 7. `src/arclith_sample/infrastructure/containers/ingredient_container.py` — L'injection de dépendances
 
 Lit la config via l'instance `Arclith` et instancie les dépendances. C'est le seul endroit où tout se branche.
 
 ```python
 from arclith import Arclith, MongoDBConfig
-from domain.ports.ingredient_repository import IngredientRepository
-from application.services.ingredient_service import IngredientService
+from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
+from arclith_sample.application.services.ingredient_service import IngredientService
 
 
 def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
@@ -174,34 +174,34 @@ def build_ingredient_service(arclith: Arclith) -> tuple[IngredientService, ...]:
     config = arclith.config
     match config.adapters.repository:
         case "mongodb":
-            from adapters.output.mongodb.repository import MongoDBIngredientRepository
+            from arclith_sample.adapters.output.mongodb.repository import MongoDBIngredientRepository
             mongo = config.adapters.mongodb
             repo: IngredientRepository = MongoDBIngredientRepository(
                 MongoDBConfig(uri=mongo.uri, db_name=mongo.db_name, collection_name=mongo.collection_name),
                 logger,
             )
         case "duckdb":
-            from adapters.output.duckdb.repository import DuckDBIngredientRepository
+            from arclith_sample.adapters.output.duckdb.repository import DuckDBIngredientRepository
             repo = DuckDBIngredientRepository(config.adapters.duckdb.path)
         case _:
-            from adapters.output.memory.repository import InMemoryIngredientRepository
+            from arclith_sample.adapters.output.memory.repository import InMemoryIngredientRepository
             repo = InMemoryIngredientRepository()
     return IngredientService(repo, logger, config.soft_delete.retention_days), logger
 ```
 
 ---
 
-## 8. `adapters/input/fastapi/dependencies.py` — Multitenancy FastAPI
+## 8. `src/arclith_sample/adapters/input/fastapi/dependencies.py` — Multitenancy FastAPI
 
 Crée le `inject_tenant_uri` qui sera injecté sur toutes les routes.
 
 ```python
 from pathlib import Path
 from arclith.adapters.input.fastapi.dependencies import make_inject_tenant_uri
-from arclith.infrastructure.config import load_config
+from arclith.infrastructure.config import load_config_dir
 
 inject_tenant_uri = make_inject_tenant_uri(
-    load_config(Path(__file__).parent.parent.parent.parent / "config.yaml")
+    load_config_dir(Path(__file__).resolve().parents[5] / "config")
 )
 ```
 
@@ -209,7 +209,7 @@ Puis dans le router :
 
 ```python
 from fastapi import APIRouter, Depends
-from adapters.input.fastapi.dependencies import inject_tenant_uri
+from arclith_sample.adapters.input.fastapi.dependencies import inject_tenant_uri
 
 self.router = APIRouter(
     prefix="/ingredient/v1",
@@ -246,13 +246,12 @@ soft_delete:
 ## Checklist pour une nouvelle entité
 
 ```
-✅ domain/models/              →  MaClasse(Entity)
-✅ domain/ports/               →  MaClasseRepository(Repository[MaClasse])   ← si requêtes spécifiques
-✅ application/use_cases/      →  MonUseCaseSpécifique                        ← si logique spécifique
-✅ application/services/       →  MaClasseService(BaseService[MaClasse])
-✅ adapters/input/schemas/     →  schémas Pydantic (Create, Update, Patch, Response)
-✅ adapters/output/            →  MaClasseRepository(InMemoryRepository / MongoDBRepository / DuckDBRepository)
-✅ adapters/input/fastapi/dependencies.py  →  inject_tenant_uri (multitenancy)
-✅ infrastructure/container.py →  brancher le repository et le service via Arclith
+✅ src/arclith_sample/domain/models/              →  MaClasse(Entity)
+✅ src/arclith_sample/domain/ports/               →  MaClasseRepository(Repository[MaClasse])   ← si requêtes spécifiques
+✅ src/arclith_sample/application/use_cases/      →  MonUseCaseSpécifique                        ← si logique spécifique
+✅ src/arclith_sample/application/services/       →  MaClasseService(BaseService[MaClasse])
+✅ src/arclith_sample/adapters/input/schemas/     →  schémas Pydantic (Create, Update, Patch, Response)
+✅ src/arclith_sample/adapters/output/            →  MaClasseRepository(InMemoryRepository / MongoDBRepository / DuckDBRepository)
+✅ src/arclith_sample/adapters/input/fastapi/dependencies.py  →  inject_tenant_uri (multitenancy)
+✅ src/arclith_sample/infrastructure/container.py →  brancher le repository et le service via Arclith
 ```
-

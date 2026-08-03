@@ -184,7 +184,7 @@ cache:
 ### 3. Câbler `VaultTenantResolver` dans le container
 
 ```python
-# infrastructure/containers/ingredient_container.py
+# src/arclith_sample/infrastructure/containers/ingredient_container.py
 from arclith.adapters.input.fastapi.dependencies import make_inject_tenant_uri
 from arclith.adapters.input.jwt.decoder import JWTDecoder
 from arclith.adapters.input.license.validator import RoleLicenseValidator
@@ -217,7 +217,7 @@ def build_inject_tenant(arclith: Arclith):
 ```
 
 ```python
-# adapters/input/fastapi/routers/ingredient_router.py
+# src/arclith_sample/adapters/input/fastapi/routers/ingredient_router.py
 router = APIRouter(dependencies=[Depends(inject_tenant)])
 ```
 

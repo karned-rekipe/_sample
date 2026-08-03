@@ -3,9 +3,9 @@ from unittest.mock import AsyncMock, patch
 import fastmcp
 import pytest
 
-from adapters.input.fastmcp.prompts import IngredientPrompts
-from application.services.ingredient_service import IngredientService
-from domain.models.ingredient import Ingredient
+from arclith_sample.adapters.input.fastmcp.prompts import IngredientPrompts
+from arclith_sample.application.services.ingredient_service import IngredientService
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ def service(repo, logger):
 
 @pytest.fixture
 async def client(service, logger, mcp_app):
-    with patch("adapters.input.fastmcp.prompts.ingredient_prompts.inject_tenant_uri", new=AsyncMock()):
+    with patch("arclith_sample.adapters.input.fastmcp.prompts.ingredient_prompts.inject_tenant_uri", new=AsyncMock()):
         IngredientPrompts(service, logger, mcp_app)
         async with fastmcp.Client(mcp_app) as c:
             yield c

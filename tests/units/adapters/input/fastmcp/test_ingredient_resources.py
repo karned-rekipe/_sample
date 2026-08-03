@@ -1,13 +1,13 @@
 import json
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import fastmcp
 import pytest
 
-from adapters.input.fastmcp.resources import IngredientResources
-from application.services.ingredient_service import IngredientService
-from domain.models.ingredient import Ingredient
+from arclith_sample.adapters.input.fastmcp.resources import IngredientResources
+from arclith_sample.application.services.ingredient_service import IngredientService
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def service(repo, logger):
 
 @pytest.fixture
 async def client(service, logger, mcp_app):
-    with patch("adapters.input.fastmcp.resources.ingredient_resources.inject_tenant_uri", new=AsyncMock()):
+    with patch("arclith_sample.adapters.input.fastmcp.resources.ingredient_resources.inject_tenant_uri", new=AsyncMock()):
         IngredientResources(service, logger, mcp_app)
         async with fastmcp.Client(mcp_app) as c:
             yield c
@@ -93,4 +93,3 @@ async def test_get_resource_found(client, service):
 async def test_get_resource_not_found_returns_null(client):
     result = await client.read_resource("ingredient://01951234-5678-7abc-def0-000000000000")
     assert _json(result) is None
-

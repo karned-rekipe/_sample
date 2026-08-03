@@ -1,5 +1,5 @@
 import pytest
-from domain.models.ingredient import Ingredient
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 def test_valid_ingredient():

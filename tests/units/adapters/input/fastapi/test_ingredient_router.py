@@ -2,10 +2,10 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient, ASGITransport
 
-from adapters.input.fastapi.dependencies import inject_tenant_uri, require_auth
-from adapters.input.fastapi.routers import AdminRouter, IngredientRouter
-from application.services.ingredient_service import IngredientService
-from infrastructure.purge_registry import PurgeRegistry
+from arclith_sample.adapters.input.fastapi.dependencies import inject_tenant_uri, require_auth
+from arclith_sample.adapters.input.fastapi.routers import AdminRouter, IngredientRouter
+from arclith_sample.application.services.ingredient_service import IngredientService
+from arclith_sample.infrastructure.purge_registry import PurgeRegistry
 
 
 def _payload(**kwargs) -> dict:

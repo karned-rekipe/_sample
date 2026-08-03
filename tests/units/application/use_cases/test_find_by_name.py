@@ -1,5 +1,5 @@
-from application.use_cases import FindByNameUseCase
-from domain.models.ingredient import Ingredient
+from arclith_sample.application.use_cases import FindByNameUseCase
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 async def test_find_by_name_returns_match(repo, logger):

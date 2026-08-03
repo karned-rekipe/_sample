@@ -2,7 +2,7 @@
 
 import logging
 
-from infrastructure.logging_setup import setup_logging
+from arclith_sample.infrastructure.logging_setup import setup_logging
 from arclith.adapters.output.console.logger import ConsoleLogger
 
 

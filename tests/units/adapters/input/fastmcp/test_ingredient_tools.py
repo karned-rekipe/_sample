@@ -3,8 +3,8 @@ import json
 import pytest
 from unittest.mock import AsyncMock, patch
 
-from adapters.input.fastmcp.tools import AdminMCP, IngredientMCP
-from application.services.ingredient_service import IngredientService
+from arclith_sample.adapters.input.fastmcp.tools import AdminMCP, IngredientMCP
+from arclith_sample.application.services.ingredient_service import IngredientService
 
 
 @pytest.fixture
@@ -19,10 +19,10 @@ def service(repo, logger):
 
 @pytest.fixture
 async def client(service, logger, mcp_app):
-    with patch("adapters.input.fastmcp.tools.ingredient_tools.inject_tenant_uri", new=AsyncMock()):
-        with patch("adapters.input.fastmcp.tools.ingredient_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
-            with patch("adapters.input.fastmcp.tools.admin_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
-                from infrastructure.purge_registry import PurgeRegistry
+    with patch("arclith_sample.adapters.input.fastmcp.tools.ingredient_tools.inject_tenant_uri", new=AsyncMock()):
+        with patch("arclith_sample.adapters.input.fastmcp.tools.ingredient_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
+            with patch("arclith_sample.adapters.input.fastmcp.tools.admin_tools.require_auth_mcp", new=AsyncMock(return_value={"sub": "test-user"})):
+                from arclith_sample.infrastructure.purge_registry import PurgeRegistry
                 registry = PurgeRegistry()
                 registry.register("ingredients", service.purge)
                 IngredientMCP(service, logger, mcp_app)

@@ -1,12 +1,12 @@
 import pytest
-from application.services.ingredient_service import IngredientService
+from arclith_sample.application.services.ingredient_service import IngredientService
 from arclith.infrastructure.config import (
     AppConfig,
     AdaptersSettings,
     MongoDBSettings,
     DuckDBSettings,
 )
-from infrastructure.containers.ingredient_container import build_ingredient_service
+from arclith_sample.infrastructure.containers.ingredient_container import build_ingredient_service
 from unittest.mock import MagicMock
 
 

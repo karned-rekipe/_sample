@@ -1,6 +1,6 @@
 from typing import Any
 import pytest
-from adapters.output.memory.repository import InMemoryIngredientRepository
+from arclith_sample.adapters.output.memory.repository import InMemoryIngredientRepository
 from arclith.domain.ports.logger import Logger, LogLevel
 
 

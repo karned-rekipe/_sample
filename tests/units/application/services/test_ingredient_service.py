@@ -1,8 +1,8 @@
 import pytest
 from uuid6 import uuid7
 
-from application.services.ingredient_service import IngredientService
-from domain.models.ingredient import Ingredient
+from arclith_sample.application.services.ingredient_service import IngredientService
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 @pytest.fixture

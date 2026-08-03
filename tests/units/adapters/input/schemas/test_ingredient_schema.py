@@ -1,13 +1,13 @@
 import pytest
 from datetime import datetime, timezone
 
-from adapters.input.schemas.ingredient_schema import (
+from arclith_sample.adapters.input.schemas.ingredient_schema import (
     IngredientCreateSchema,
     IngredientPatchSchema,
     IngredientSchema,
     IngredientUpdateSchema,
 )
-from domain.models.ingredient import Ingredient
+from arclith_sample.domain.models.ingredient import Ingredient
 
 
 # --- IngredientCreateSchema ---
