@@ -18,17 +18,17 @@ logger: console
 #   mongodb  → Base de données MongoDB (production-ready)
 #              ✓ Scalable, multitenant
 #              ✓ Transactions ACID
-#              → Nécessite : MongoDB server + config dans output/mongodb.yaml
+#              → Nécessite : MongoDB server + config dans outbound/mongodb.yaml
 #              → URI dans secrets.yaml ou Vault
 #
 #   duckdb   → Base de données fichier locale (SQL analytique)
 #              ✓ SQL puissant, sans serveur
 #              ✓ Import CSV/Parquet/JSON natif
-#              → Nécessite : config dans output/duckdb.yaml
+#              → Nécessite : config dans outbound/duckdb.yaml
 #
 # Pour passer en production :
 #   1. Changer 'memory' → 'mongodb' ou 'duckdb'
-#   2. Configurer output/mongodb.yaml ou output/duckdb.yaml
+#   2. Configurer outbound/mongodb.yaml ou outbound/duckdb.yaml
 #   3. Ajouter les secrets (URI MongoDB) dans secrets.yaml ou Vault
 #
 repository: memory

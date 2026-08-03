@@ -1,173 +1,167 @@
-# 🚀 Guide de démarrage rapide — Arclith sample
+# Quickstart demo Arclith sample
 
-Ce guide permet de démarrer rapidement l'implémentation fonctionnelle `_sample` avec authentification Keycloak.
+Ce guide lance `_sample` comme banc de test concret pour les evolutions Arclith. Le parcours par defaut utilise l'adapter `memory`, sans MongoDB ni Keycloak, afin de valider vite le coeur hexagonal, l'API, MCP et les probes.
 
-## 📋 Prérequis
+## Objectif
+
+`_sample` doit rester l'implementation fonctionnelle de reference:
+
+- un domaine `Ingredient` independant des frameworks;
+- un port repository et plusieurs adapters outbound (`memory`, `mongodb`, `duckdb`);
+- des adapters inbound FastAPI et FastMCP qui exposent les memes cas d'usage;
+- des probes `health`, `ready`, `info` et `metrics`;
+- un smoke test executable localement et en CI.
+
+## Prerequis
 
 - Python 3.13
-- Keycloak 26+ en cours d'exécution sur le port 5990
-- `uv` (gestionnaire de packages)
+- `uv`
+- `curl`
 
-## 🔧 Installation
+## 1. Installer
 
 ```bash
-cd _sample
+cd /Users/killian/Perso/projets/Arclith/_sample
 uv sync --frozen
 ```
 
-## 🔐 Configuration Keycloak
+## 2. Lancer le sample
 
-### 1. Vérifier que Keycloak est accessible
+Le mode `all` lance l'API FastAPI, MCP HTTP et les probes.
 
 ```bash
-curl http://127.0.0.1:5990
+MODE=all uv run --frozen python main.py
 ```
 
-Si Keycloak n'est pas démarré, lancez-le (via Docker, Podman, ou installation locale).
+Endpoints par defaut:
 
-### 2. Initialiser le realm et le client
+- API REST: `http://127.0.0.1:8000`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- MCP HTTP: `http://127.0.0.1:8001/mcp`
+- probes: `http://127.0.0.1:9000`
 
-Depuis la racine du workspace local qui contient les scripts Keycloak :
+Si le port `8001` est deja occupe localement, utiliser `MODE=api` pour valider l'API et les probes avec `make demo-smoke`. Pour valider MCP, liberer `8001` ou ajuster `config/adapters/inbound/fastmcp.yaml`.
+
+## 3. Verifier le runtime
+
+Dans un deuxieme terminal:
+
+```bash
+curl -fsS http://127.0.0.1:9000/health
+curl -fsS http://127.0.0.1:9000/ready
+curl -fsS http://127.0.0.1:9000/info
+curl -fsS http://127.0.0.1:9000/metrics
+```
+
+## 4. Jouer la demo CRUD
+
+Le smoke test cree un ingredient, le relit, filtre la liste et teste la duplication.
+
+```bash
+make demo-smoke
+```
+
+Le script accepte des URL custom si les ports changent:
+
+```bash
+API_BASE=http://127.0.0.1:8100 PROBE_BASE=http://127.0.0.1:9100 make demo-smoke
+```
+
+## 5. Tester manuellement l'API
+
+```bash
+CREATE_RESPONSE=$(curl -fsS -X POST http://127.0.0.1:8000/v1/ingredients/ \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: demo-$(uv run --frozen python -c 'import uuid; print(uuid.uuid4())')" \
+  -H "Prefer: return=representation" \
+  -d '{"name":"Farine demo Arclith"}')
+
+echo "$CREATE_RESPONSE"
+
+INGREDIENT_ID=$(CREATE_RESPONSE="$CREATE_RESPONSE" uv run --frozen python - <<'PY'
+import json
+import os
+
+print(json.loads(os.environ["CREATE_RESPONSE"])["data"]["uuid"])
+PY
+)
+
+curl -fsS "http://127.0.0.1:8000/v1/ingredients/$INGREDIENT_ID"
+curl -fsS "http://127.0.0.1:8000/v1/ingredients/?name=Farine"
+curl -fsS -X POST "http://127.0.0.1:8000/v1/ingredients/$INGREDIENT_ID/duplicate" \
+  -H "Prefer: return=representation"
+```
+
+## 6. Changer l'adapter repository
+
+L'adapter actif est pilote par:
+
+```text
+config/adapters/adapters.yaml
+```
+
+Valeur par defaut:
+
+```yaml
+repository: memory
+```
+
+### DuckDB
+
+1. Mettre `repository: duckdb` dans `config/adapters/adapters.yaml`.
+2. Verifier `config/adapters/outbound/duckdb.yaml`.
+3. Relancer `MODE=all uv run --frozen python main.py`.
+4. Rejouer `make demo-smoke`.
+
+### MongoDB
+
+1. Mettre `repository: mongodb` dans `config/adapters/adapters.yaml`.
+2. Verifier `config/adapters/outbound/mongodb.yaml`.
+3. Garder l'URI MongoDB dans `secrets.yaml`, une variable d'environnement ou Vault. Ne jamais commiter l'URI.
+4. Relancer `MODE=all uv run --frozen python main.py`.
+5. Rejouer `make demo-smoke`.
+
+## 7. Auth Keycloak
+
+Keycloak n'est pas requis pour le smoke test de base. Il devient utile pour valider les endpoints proteges comme `DELETE /v1/ingredients/{uuid}` et les routes admin.
+
+Configuration attendue:
+
+- Keycloak: `http://127.0.0.1:5990`
+- Realm: `sample`
+- Client ID: `sample`
+- User de test: `test` / `test`
+
+Si les scripts Keycloak sont disponibles dans ton workspace:
 
 ```bash
 python scripts/seed_keycloak.py
 ```
 
-Ce script crée :
+Puis tester l'authentification via Swagger UI:
 
-- **Realm** : `sample`
-- **Client ID** : `sample` (PKCE activé)
-- **User de test** : `test` / `test`
-- **Redirect URIs** : configurés pour Swagger UI
-
-### 3. Vérifier la configuration
-
-```bash
-# Vérifier que le realm existe
-curl http://127.0.0.1:5990/realms/sample/.well-known/openid-configuration | jq .issuer
-
-# Doit retourner : "http://127.0.0.1:5990/realms/sample"
+```text
+http://127.0.0.1:8000/docs
 ```
 
-## 🚀 Lancer l'application
+## 8. Valider une evolution Arclith
 
-### Mode API (FastAPI REST)
+Avant de publier une evolution du framework:
 
 ```bash
-cd _sample
-MODE=api uv run --frozen python main.py
+make quality
 ```
 
-L'API démarre sur **http://127.0.0.1:8000**
-
-### Mode MCP HTTP
+Terminal 1:
 
 ```bash
-cd _sample
-MODE=mcp_http uv run --frozen python main.py
-```
-
-Le serveur MCP démarre sur **http://127.0.0.1:8001**
-
-### Mode MCP SSE
-
-```bash
-cd _sample
-MODE=mcp_sse uv run --frozen python main.py
-```
-
-### Mode ALL (API + MCP HTTP)
-
-```bash
-cd _sample
 MODE=all uv run --frozen python main.py
 ```
 
-Démarre simultanément :
-
-- **API REST** : http://127.0.0.1:8000
-- **MCP HTTP** : http://127.0.0.1:8001
-- **Probes** : http://127.0.0.1:9000 (health, ready, metrics)
-
-## 🧪 Tester l'authentification
-
-### Via Swagger UI
-
-1. Ouvrez http://127.0.0.1:8000/docs
-2. Cliquez sur le bouton **Authorize** (🔒) en haut à droite
-3. Laissez tous les champs par défaut et cliquez sur **Authorize**
-4. Vous serez redirigé vers Keycloak
-5. Connectez-vous avec :
-    - **Username** : `test`
-    - **Password** : `test`
-6. Vous êtes maintenant authentifié !
-
-### Via cURL (obtenir un token)
+Terminal 2:
 
 ```bash
-# Obtenir un token directement
-curl -X POST "http://127.0.0.1:5990/realms/sample/protocol/openid-connect/token" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "client_id=sample" \
-  -d "username=test" \
-  -d "password=test" \
-  -d "grant_type=password" | jq -r .access_token
+make demo-smoke
 ```
 
-### Appeler l'API avec le token
-
-```bash
-# Obtenir le token
-TOKEN=$(curl -s -X POST "http://127.0.0.1:5990/realms/sample/protocol/openid-connect/token" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "client_id=sample" \
-  -d "username=test" \
-  -d "password=test" \
-  -d "grant_type=password" | jq -r .access_token)
-
-# Appeler l'API
-curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/ingredient/v1/
-```
-
-## 🔍 Endpoints utiles
-
-| Endpoint                             | Description           |
-|--------------------------------------|-----------------------|
-| http://127.0.0.1:8000/docs           | Swagger UI (API REST) |
-| http://127.0.0.1:8000/ingredient/v1/ | CRUD Ingredient       |
-| http://127.0.0.1:9000/health         | Health check          |
-| http://127.0.0.1:9000/ready          | Readiness probe       |
-| http://127.0.0.1:9000/info           | Application info      |
-| http://127.0.0.1:9000/metrics        | Prometheus metrics    |
-
-## ❌ Dépannage
-
-### Erreur "Realm does not exist"
-
-→ Le realm `sample` n'a pas été créé dans Keycloak. Exécutez `python scripts/seed_keycloak.py`
-
-### Erreur "page not found" sur Keycloak
-
-→ Vérifiez que :
-
-- La configuration dans `config/adapters/inbound/keycloak.yaml` correspond à votre Keycloak
-- Le `redirect_uri` pointe vers le bon port (8000 par défaut)
-
-### Swagger UI : erreur d'autorisation
-
-→ Vérifiez que :
-
-- Le client `sample` existe dans Keycloak
-- Les `redirect_uris` incluent `http://127.0.0.1:8000/docs/oauth2-redirect`
-- PKCE est activé sur le client
-
-### Port 8000 déjà utilisé
-
-→ Changez le port dans `config/adapters/inbound/fastapi.yaml` et relancez `seed_keycloak.py` avec le nouveau port
-
-## 📚 Documentation
-
-- Architecture : `AGENTS.md`
-- Configuration complète : `config/`
-- Décisions : `../arclith/docs/decisions.md`
-- Auth JWT : `../arclith/docs/auth.md`
+La regle de fond: si Arclith change, `_sample` doit continuer a demontrer que le domaine reste independant des adapters et que les transports API/MCP appellent les memes cas d'usage.
