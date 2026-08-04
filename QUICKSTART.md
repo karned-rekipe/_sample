@@ -21,7 +21,8 @@ Ce guide lance `_sample` comme banc de test concret pour les evolutions Arclith.
 ## 1. Installer
 
 ```bash
-cd /Users/killian/Perso/projets/Arclith/_sample
+git clone https://github.com/karned-rekipe/_sample.git
+cd _sample
 uv sync --frozen
 ```
 
