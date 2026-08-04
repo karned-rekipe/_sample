@@ -4,6 +4,8 @@ Implémentation fonctionnelle minimale d'Arclith pour tester le framework en con
 
 Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters memory, MongoDB et DuckDB. Il sert de bac à sable pour valider les primitives du framework avant publication.
 
+Quickstart demo: [QUICKSTART.md](QUICKSTART.md)
+
 ## Project Links
 
 - Framework: [karned-rekipe/arclith](https://github.com/karned-rekipe/arclith)
@@ -19,18 +21,25 @@ Ce dépôt expose un CRUD `Ingredient` via FastAPI et FastMCP, avec adapters mem
 | `src/arclith_sample/domain/ports/` | Interfaces abstraites entre le domaine et le monde extérieur |
 | `src/arclith_sample/application/use_cases/` | Cas d'usage applicatifs |
 | `src/arclith_sample/application/services/` | Services applicatifs construits sur les use cases Arclith |
-| `src/arclith_sample/adapters/input/` | Adaptateurs entrants FastAPI et FastMCP |
-| `src/arclith_sample/adapters/output/` | Adaptateurs sortants memory, MongoDB, DuckDB |
+| `src/arclith_sample/adapters/inbound/` | Adaptateurs entrants FastAPI et FastMCP |
+| `src/arclith_sample/adapters/outbound/` | Adaptateurs sortants memory, MongoDB, DuckDB |
 | `src/arclith_sample/infrastructure/` | Câblage global, configuration et injection des dépendances |
 
 ---
 
 ## Lancement
 
-### Prérequis
+### Prerequis
 
 ```bash
-uv sync
+uv sync --frozen
+```
+
+Pour le parcours de demo sans dependance externe:
+
+```bash
+MODE=all uv run --frozen python main.py
+make demo-smoke
 ```
 
 ### Configuration Keycloak (authentification JWT)
@@ -67,12 +76,12 @@ MODE=api uv run --frozen python main.py
 ```
 
 - Swagger UI : [http://localhost:8000/docs](http://localhost:8000/docs)
-- Base URL : `http://localhost:8000/ingredient/v1/`
+- Base URL : `http://localhost:8000/v1/ingredients/`
 
 ### 2. Serveur MCP SSE
 
 Expose les outils MCP via HTTP SSE. Le serveur doit tourner avant que le client s'y connecte.  
-Tourne sur le port **8000**
+Tourne sur le port **8001**
 
 ```bash
 MODE=mcp_sse uv run --frozen python main.py
@@ -87,7 +96,7 @@ Configuration `mcp.json` :
 {
   "mcpServers": {
     "arclith-ingredients-sse": {
-      "url": "http://localhost:8000/sse"
+      "url": "http://localhost:8001/sse"
     }
   }
 }
@@ -105,4 +114,4 @@ L'adapter actif est piloté par `config/adapters/adapters.yaml`.
 repository: mongodb
 ```
 
-La configuration MongoDB se trouve dans `config/adapters/output/mongodb.yaml`. Le domaine, les services et les cas d'usage restent indépendants de MongoDB.
+La configuration MongoDB se trouve dans `config/adapters/outbound/mongodb.yaml`. Le domaine, les services et les cas d'usage restent indépendants de MongoDB.

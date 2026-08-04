@@ -3,7 +3,7 @@
 import logging
 
 from arclith_sample.infrastructure.logging_setup import setup_logging
-from arclith.adapters.output.console.logger import ConsoleLogger
+from arclith.adapters.outbound.console.logger import ConsoleLogger
 
 
 def test_setup_logging_returns_console_logger():

@@ -1,7 +1,7 @@
 from typing import Any
 import pytest
-from arclith_sample.adapters.output.memory.repository import InMemoryIngredientRepository
-from arclith.domain.ports.logger import Logger, LogLevel
+from arclith_sample.adapters.outbound.memory.repository import InMemoryIngredientRepository
+from arclith.domain.ports.outbound.logger import Logger, LogLevel
 
 
 class NullLogger(Logger):

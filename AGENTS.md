@@ -77,7 +77,7 @@ uv sync
 ## Fichiers à lire en premier
 
 1. `src/arclith_sample/infrastructure/containers/ingredient_container.py` — pattern de référence pour un container
-2. `src/arclith_sample/adapters/input/fastmcp/tools/ingredient_tools.py` — pattern simplifié de registration MCP
-3. `src/arclith_sample/adapters/input/fastapi/routers/ingredient_router.py` — pattern REST conforme HTTP conventions
+2. `src/arclith_sample/adapters/inbound/fastmcp/tools/ingredient_tools.py` — pattern simplifié de registration MCP
+3. `src/arclith_sample/adapters/inbound/fastapi/routers/ingredient_router.py` — pattern REST conforme HTTP conventions
 4. `config/` — configuration minimale pour le dev local
 5. `../arclith/docs/http-conventions.md` — conventions HTTP/REST SOTA

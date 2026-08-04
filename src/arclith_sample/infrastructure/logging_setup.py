@@ -3,7 +3,7 @@ from types import FrameType
 
 from loguru import logger as _loguru
 
-from arclith.adapters.output.console.logger import ConsoleLogger
+from arclith.adapters.outbound.console.logger import ConsoleLogger
 
 _EMOJI = {"DEBUG": "🔬", "INFO": "💬", "WARNING": "⚠️", "ERROR": "❌", "CRITICAL": "🔥"}
 

@@ -185,10 +185,10 @@ cache:
 
 ```python
 # src/arclith_sample/infrastructure/containers/ingredient_container.py
-from arclith.adapters.input.fastapi.dependencies import make_inject_tenant_uri
-from arclith.adapters.input.jwt.decoder import JWTDecoder
-from arclith.adapters.input.license.validator import RoleLicenseValidator
-from arclith.adapters.output.vault.tenant_adapter import VaultTenantResolver
+from arclith.adapters.inbound.fastapi.dependencies import make_inject_tenant_uri
+from arclith.adapters.inbound.jwt.decoder import JWTDecoder
+from arclith.adapters.inbound.license.validator import RoleLicenseValidator
+from arclith.adapters.outbound.vault.tenant_adapter import VaultTenantResolver
 
 def build_inject_tenant(arclith: Arclith):
     cfg = arclith.config
@@ -217,7 +217,7 @@ def build_inject_tenant(arclith: Arclith):
 ```
 
 ```python
-# src/arclith_sample/adapters/input/fastapi/routers/ingredient_router.py
+# src/arclith_sample/adapters/inbound/fastapi/routers/ingredient_router.py
 router = APIRouter(dependencies=[Depends(inject_tenant)])
 ```
 

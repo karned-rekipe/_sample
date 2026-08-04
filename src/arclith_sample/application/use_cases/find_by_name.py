@@ -1,6 +1,6 @@
-from arclith.domain.ports.logger import Logger
+from arclith.domain.ports.outbound.logger import Logger
 from arclith_sample.domain.models.ingredient import Ingredient
-from arclith_sample.domain.ports.output.ingredient_repository import IngredientRepository
+from arclith_sample.domain.ports.outbound.ingredient_repository import IngredientRepository
 
 
 class FindByNameUseCase:

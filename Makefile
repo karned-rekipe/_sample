@@ -1,4 +1,4 @@
-.PHONY: lint typecheck security complexity test test-unit test-e2e coverage quality precommit setup
+.PHONY: lint typecheck security complexity test test-unit test-e2e coverage quality precommit setup demo-smoke
 
 SRC := src/arclith_sample
 UV  := uv run --frozen
@@ -34,3 +34,6 @@ coverage:
 quality: lint security complexity typecheck coverage
 
 precommit: lint typecheck security
+
+demo-smoke:
+	bash scripts/demo_smoke.sh

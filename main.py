@@ -14,10 +14,10 @@ from pathlib import Path
 
 import sys
 
-import arclith_sample.adapters.input.fastmcp.prompts as prompts_module
-import arclith_sample.adapters.input.fastmcp.register as tools_module
-import arclith_sample.adapters.input.fastmcp.resources as resources_module
-from arclith_sample.adapters.input.fastapi.register import register_routers
+import arclith_sample.adapters.inbound.fastmcp.prompts as prompts_module
+import arclith_sample.adapters.inbound.fastmcp.register as tools_module
+import arclith_sample.adapters.inbound.fastmcp.resources as resources_module
+from arclith_sample.adapters.inbound.fastapi.register import register_routers
 from arclith import Arclith
 from arclith_sample.infrastructure.logging_setup import setup_logging
 
@@ -27,7 +27,7 @@ from arclith_sample.infrastructure.logging_setup import setup_logging
 #   - tools/ prompts/ resources/ → sous-dossiers avec les implémentations par entité
 #
 # Nommage pour éviter les conflits Python (package vs module) :
-#   import arclith_sample.adapters.input.fastmcp.tools as tools_module
+#   import arclith_sample.adapters.inbound.fastmcp.tools as tools_module
 #
 # Pour ajouter une nouvelle entité (ex: Recipe) :
 #   1. Créer tools/recipe_tools.py, prompts/recipe_prompts.py, resources/recipe_resources.py
