@@ -23,8 +23,11 @@ Ce guide lance `_sample` comme banc de test concret pour les evolutions Arclith.
 ```bash
 git clone https://github.com/karned-rekipe/_sample.git
 cd _sample
-uv sync --frozen
+if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
 ```
+
+Le clone `_sample` utilise `uv.lock` avec `--frozen`.
+Un projet genere par `arclith-cli` n'a pas encore de lockfile; le premier `uv sync` le cree.
 
 ## 2. Lancer le sample
 

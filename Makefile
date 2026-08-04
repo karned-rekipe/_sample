@@ -4,6 +4,7 @@ SRC := src/arclith_sample
 UV  := uv run --frozen
 
 setup:
+	@if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
 	git config core.hooksPath .githooks
 
 lint:
