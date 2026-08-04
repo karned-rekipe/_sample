@@ -112,7 +112,7 @@ class RecipeService(BaseService[Recipe]):
 
 ---
 
-## 5. Adapters output — Repositories
+## 5. Adapters outbound — Repositories
 
 ### Memory
 
@@ -181,7 +181,7 @@ class DuckDBRecipeRepository(DuckDBRepository[Recipe], RecipeRepository):
 
 ---
 
-## 6. Adapters input — Schémas
+## 6. Adapters inbound — Schémas
 
 `src/arclith_sample/adapters/inbound/schemas/recipe_schema.py`
 
@@ -213,7 +213,7 @@ class RecipeSchema(BaseSchema):
 
 ---
 
-## 7. Adapters input — Router FastAPI
+## 7. Adapters inbound — Router FastAPI
 
 `src/arclith_sample/adapters/inbound/fastapi/routers/recipe_router.py`
 
@@ -233,7 +233,7 @@ def register_routers(app: FastAPI, arclith: Arclith) -> None:
 
 ---
 
-## 8. Adapters input — Tools FastMCP
+## 8. Adapters inbound — Tools FastMCP
 
 `src/arclith_sample/adapters/inbound/fastmcp/tools/recipe_tools.py`
 
