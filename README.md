@@ -32,10 +32,10 @@ Quickstart demo: [QUICKSTART.md](QUICKSTART.md)
 ### Prerequis
 
 ```bash
-uv sync
+if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
 ```
 
-Le premier `uv sync` cree `uv.lock` quand le projet vient d'etre genere par `arclith-cli`.
+Cette commande garde le clone `_sample` reproductible avec `uv.lock`, tout en creant le lockfile quand le projet vient d'etre genere par `arclith-cli`.
 
 Pour le parcours de demo sans dependance externe:
 
