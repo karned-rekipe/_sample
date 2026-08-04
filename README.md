@@ -32,8 +32,10 @@ Quickstart demo: [QUICKSTART.md](QUICKSTART.md)
 ### Prerequis
 
 ```bash
-uv sync --frozen
+uv sync
 ```
+
+Le premier `uv sync` cree `uv.lock` quand le projet vient d'etre genere par `arclith-cli`.
 
 Pour le parcours de demo sans dependance externe:
 
