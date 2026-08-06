@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - First install now uses `uv sync` without `--frozen`, because generated projects do not include `uv.lock`.
-- Generated projects require `arclith>=0.11.0`, matching the canonical `adapters/inbound` and `adapters/outbound` framework layout.
+- Generated projects require `arclith>=0.12.0`, so agent projects can add the published `arclith[langgraph]` extra when needed.
 
 ## [0.2.0] — 2026-08-03
 
