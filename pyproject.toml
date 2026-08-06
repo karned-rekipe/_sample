@@ -8,7 +8,7 @@ version = "0.2.0"
 description = "Functional sample CRUD built on Arclith"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "arclith[mongodb,fastapi,mcp,duckdb]>=0.11.0",
+    "arclith[mongodb,fastapi,mcp,duckdb]>=0.12.0",
     "hvac>=2.3.0",
 ]
 
