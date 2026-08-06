@@ -48,11 +48,10 @@ jobs:
               sys.exit(1)
 
           requirement = arclith_deps[0]
-          if ">=0.11.0" not in requirement:
-              print(f"❌ Generated project must require arclith>=0.11.0, got: {requirement}")
+          if ">=0.12.0" not in requirement:
+              print(f"❌ Generated project must require arclith>=0.12.0, got: {requirement}")
               sys.exit(1)
 
-          print("✅ Generated project uses stable PyPI arclith>=0.11.0")
+          print("✅ Generated project uses stable PyPI arclith>=0.12.0")
           print(requirement)
           PY
-
